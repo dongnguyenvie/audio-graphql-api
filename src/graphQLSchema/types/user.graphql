@@ -1,11 +1,47 @@
-type User {
-  id: ID!
-  name: String! @upper
-  posts: [Post!]!
+input InputRemoveUser {
+  id: String!
 }
 
-type Token {
-  token: String!
+input InputCreateUser {
+  username: String!
+  fullName: String!
+  avatar: String!
+  email: String!
+  phone: String
+  password: String!
+  roleId: [String]
+}
+
+input InputUpdateUser {
+  username: String!
+  fullName: String!
+  avatar: String!
+  email: String!
+  phone: String
+  password: String!
+  roleId: [String]
+}
+
+input InputChangePassword {
+  id: String! @validate(condition: [{ conName: "isEmpty" }])
+  oldPass: String! @validate(schema: "user", condition: [{ conName: "isEmpty" }])
+  newPass: String! @validate(schema: "user", condition: [{ conName: "isEmpty" }])
+  confirmPass: String! @validate(schema: "user", condition: [{ conName: "isEmpty" }])
+}
+
+input inputUserQuery {
+  id: String!
+}
+
+type User {
+  username: String!
+  fullName: String
+  avatar: String
+  email: String
+  phone: String
+  roles: [Role]
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type ParseToken {
@@ -14,12 +50,26 @@ type ParseToken {
   exp: String
 }
 
-type Query {
-  user(id: ID!): User!
-  login(name: String!, password: String!): Token!  @me
-  isLogin: ParseToken @auth(requires: ADMIN) @me
+type UserResponse {
+  success: Boolean!
+  message: String
+  result: User
 }
 
-type Mutation {
-  createUser(name: String!, password: String!): User!
+type UsersResponse {
+  success: Boolean!
+  message: String
+  result: [User]
+}
+
+extend type Query {
+  getUsers: UsersResponse
+  getUser(user: inputUserQuery!): UserResponse
+}
+
+extend type Mutation {
+  createUser(user: InputCreateUser): User!
+  updateUser(user: InputUpdateUser!): UserResponse!
+  deleteUser(user: InputRemoveUser): UserResponse
+  changePassword(user: InputChangePassword): UserResponse!
 }
