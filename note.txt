@@ -1,0 +1,2 @@
+// logger.info(`info 127.0.0.1 -, ${uuidv4()}`);
+// logger.error("error 127.0.0.1 - there's no place like home2222222222");

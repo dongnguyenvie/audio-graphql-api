@@ -1,0 +1,25 @@
+type User {
+  id: ID!
+  name: String! @upper
+  posts: [Post!]!
+}
+
+type Token {
+  token: String!
+}
+
+type ParseToken {
+  id: ID
+  iat: String
+  exp: String
+}
+
+type Query {
+  user(id: ID!): User!
+  login(name: String!, password: String!): Token!  @me
+  isLogin: ParseToken @auth(requires: ADMIN) @me
+}
+
+type Mutation {
+  createUser(name: String!, password: String!): User!
+}

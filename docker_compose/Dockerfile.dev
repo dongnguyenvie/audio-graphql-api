@@ -1,0 +1,4 @@
+FROM node:latest
+ADD ./docker_compose/dev.sh /usr/dev.sh
+RUN sed -i 's/\r//' /usr/dev.sh
+RUN chmod +x /usr/dev.sh
