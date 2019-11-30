@@ -1,27 +1,41 @@
-import bcrypt from 'bcrypt';
-import mongoose from 'mongoose';
+import bcrypt from 'bcrypt'
+import mongoose, { Schema } from 'mongoose'
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  posts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true
     },
-  ],
-});
+    fullName: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String
+      // required: true
+    },
+    phone: {
+      type: String
+    },
+    password: {},
+    roles: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Role'
+      }
+    ]
+    //   wallet: {},
+  },
+  {
+    timestamps: true
+  }
+)
 
 userSchema.pre('save', function() {
-  const hashedPassword = bcrypt.hashSync(this.password, 12);
-  this.password = hashedPassword;
-});
+  const hashedPassword = bcrypt.hashSync(this.password, 12)
+  this.password = hashedPassword
+})
 
-export const user = mongoose.model('user', userSchema);
+export const user = mongoose.model('User', userSchema)
