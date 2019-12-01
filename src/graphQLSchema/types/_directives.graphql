@@ -1,10 +1,10 @@
 directive @upper on FIELD_DEFINITION
 directive @me on FIELD_DEFINITION
-directive @auth(requires: Role = ADMIN) on OBJECT | FIELD_DEFINITION
+directive @auth(requires: enumRole = ADMIN) on OBJECT | FIELD_DEFINITION
 directive @validate(schema: String, condition: [JSON]) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 directive @email on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
-enum Role {
+enum enumRole {
   ADMIN
   REVIEWER
   USER

@@ -1,12 +1,15 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { AuthenticationError } from 'apollo-server'
+import GraphqlEx from '../../../core/helper/graphql'
 
 export default {
   Query: {
-    getUser: async (parent, { id }, { models, me }, info) => {
-      const user = await models.user.findById({ _id: id }).exec()
-      return user
+    getRole: async (parent, { role: roleField }, { models, me }, info) => {
+      const { id } = roleField
+      const role = await models.role.findById({ _id: id }).exec()
+      GraphqlEx.reponse(role)
+      return role
     }
     // login: async (parent, { name, password }, { models, req }, info) => {
     //   const user = await models.user.findOne({ name }).exec()
@@ -31,10 +34,10 @@ export default {
     // }
   },
   Mutation: {
-    createUser: async (parent, { username, fullName, avatar, email, phone, password, rolesId }, { models }, info) => {
-      const roles = [...rolesId]
-      const user = await models.user.create({ username, fullName, avatar, email, phone, password, roles })
-      return user
+    createRole: async (parent, { role: roleField }, { models }, info) => {
+      const { name, description, permission } = roleField
+      const query = models.role.create({ name, description, permission })
+      return GraphqlEx.create(query, models.role)
     }
   }
 }

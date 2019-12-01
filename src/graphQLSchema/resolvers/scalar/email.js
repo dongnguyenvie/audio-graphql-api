@@ -1,7 +1,7 @@
 import { GraphQLScalarType, GraphQLString } from 'graphql'
 const emailRegEx = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
-export default class EmailType extends GraphQLScalarType {
+class EmailType extends GraphQLScalarType {
   constructor(type) {
     super({
       name: 'Email',

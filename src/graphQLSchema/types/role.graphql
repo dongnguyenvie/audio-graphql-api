@@ -1,0 +1,38 @@
+type Role {
+  name: String!
+  description: String
+  permission: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input InputCreateRole {
+  name: String!
+  description: String!
+  permission: Int!
+}
+
+input InputRoleQuery {
+  id: String!
+}
+
+type RoleResponse {
+  success: Boolean!
+  message: String
+  result: Role
+}
+
+type RolesResponse {
+  success: Boolean!
+  message: String
+  result: [Role]
+}
+
+extend type Query {
+  getRole(role: InputRoleQuery!): RoleResponse
+  getRoles: RolesResponse
+}
+
+extend type Mutation {
+  createRole(role: InputCreateRole!): RoleResponse!
+}
