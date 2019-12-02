@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { AuthenticationError } from 'apollo-server'
-import GraphqlEx from '../../../core/helper/graphql'
+import graphqlHepler from '../../../core/helper/graphql'
 
 export default {
   Query: {
@@ -36,8 +36,8 @@ export default {
   Mutation: {
     createRole: async (parent, { role: roleField }, { models }, info) => {
       const { name, description, permission } = roleField
-      const query = models.role.create({ name, description, permission })
-      return GraphqlEx.create(query, models.role)
+      const role = await graphqlHepler.create(models.role, { name, description, permission })
+      return role
     }
   }
 }

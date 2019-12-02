@@ -1,36 +1,61 @@
+import logger from '../../utils/logger'
+
 const METHOD = {
-  CREATE: 'CREATE',
+  CREATE: 'create',
   GET: 'GET',
   UPDATE: 'UPDATE',
   DELETE: 'DELETE'
 }
 
-export default class Graphqlresponse {
+const DEFAULT_RESPONSE_FLG = false
+export default class GraphqlHepler {
   static getModelName(model) {
     return model.collection.collectionName
   }
-  static async response(dataAsync, model, methodNm) {
+
+  static async handleExec(model, args, options, _method) {
     let response = {}
     try {
-      const data = await dataAsync
+      const document = await model[_method](args)
       response.success = true
-      response.result = data
+      response.data = document
     } catch (error) {
+      const _modelNm = this.getModelName(model)
       response.success = false
-      response.message = `${methodNm} ${this.getModelName(model)} failed!`
+      response.message = `${_method} ${_modelNm} failed!`
+      logger.error(error)
     }
     return response
   }
-  static create(dataAsync, model) {
-    return this.response(dataAsync, model, METHOD.CREATE)
+  static async handleDefaultExec(model, args, options, _method) {
+    let response = null
+    try {
+      const document = await model[_method](args)
+      response = document
+    } catch (error) {
+      response = false
+      logger.error(error)
+    }
+    return response
   }
-  static get(dataAsync, model) {
-    return this.response(dataAsync, model, METHOD.GET)
+
+  static get (model, args, options = {}, reponseDefaultFlg = DEFAULT_RESPONSE_FLG) {
+    // if (!reponseDefaultFlg) {
+    //   return this.handleExec(model, args, options, METHOD.CREATE)
+    // } else {
+    //   return this.handleDefaultExec(model, args, options, METHOD.)
+    // }
   }
-  static update(dataAsync, model) {
-    return this.response(dataAsync, model, METHOD.UPDATE)
+  static create(model, args, options = {}, reponseDefaultFlg = DEFAULT_RESPONSE_FLG) {
+    if (!reponseDefaultFlg) {
+      return this.handleExec(model, args, options, METHOD.CREATE)
+    } else {
+      return this.handleDefaultExec(model, args, options, METHOD.CREATE)
+    }
   }
-  static delete(dataAsync, model) {
-    return this.response(dataAsync, model, METHOD.DELETE)
-  }
+  
+  // static findById()
+  static get(model, args, options = {}, reponseDefaultFlg = DEFAULT_RESPONSE_FLG) {}
+  static update(model, args, options = {}, reponseDefaultFlg = DEFAULT_RESPONSE_FLG) {}
+  static delete(model, args, options = {}, reponseDefaultFlg = DEFAULT_RESPONSE_FLG) {}
 }
