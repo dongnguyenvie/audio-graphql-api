@@ -6,8 +6,6 @@ import ctrs from '../controller'
 export default {
   Query: {
     getUser: async (parent, args, ctx, info) => {
-      // const user = await models.user.findById({ _id: id }).exec()
-      // return user
       return ctrs.user.getUser(parent, ctx.models.user, args)
     }
     // login: async (parent, { name, password }, { models, req }, info) => {

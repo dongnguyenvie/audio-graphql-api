@@ -63,6 +63,7 @@ class ModelHepler {
    * @returns {Promise} response
    */
   static async findOne(model, conditions = {}, projection = '', options = {}, populate) {
+    console.log(`conditions`, conditions)
     let asyncData
     const modelNm = this.getModelName(model)
     if (populate) {

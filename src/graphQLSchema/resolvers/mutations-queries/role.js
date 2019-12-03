@@ -2,14 +2,15 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { AuthenticationError } from 'apollo-server'
 import ctrs from '../controller'
+import graphqlFields from 'graphql-fields'
+import helper from '../../../core/common/helper'
 
 export default {
   Query: {
-    getRole: async (parent, { role: roleField }, { models, me }, info) => {
-      const { id } = roleField
-      const role = await models.role.findById({ _id: id }).exec()
-      // GraphqlEx.reponse(role)
-      return role
+    getRole: async (parent, { role: args }, { models, me }, info) => {
+      const projection = helper.getProjection(info)
+      console.log(`projection`, projection)
+      return ctrs.role.getRole(models.role, parent, args, projection)
     }
     // login: async (parent, { name, password }, { models, req }, info) => {
     //   const user = await models.user.findOne({ name }).exec()

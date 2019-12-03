@@ -13,7 +13,18 @@ input InputCreateRole {
 }
 
 input InputRoleQuery {
-  id: String!
+  id: ID!
+}
+
+input InputUpdateRole {
+  id: ID!
+  name: String
+  description: String
+  permission: Int
+}
+
+input InputDeleteRole {
+  id: ID!
 }
 
 type RoleResponse {
@@ -35,4 +46,6 @@ extend type Query {
 
 extend type Mutation {
   createRole(role: InputCreateRole!): RoleResponse!
+  updateRole(role: InputUpdateRole!): RoleResponse!
+  deleteRole(role: InputDeleteRole!): RoleResponse!
 }
