@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { AuthenticationError } from 'apollo-server'
+import ctrs from '../controller'
 
 export default {
   Query: {
-    getUser: async (parent, { id }, { models, me }, info) => {
-      const user = await models.user.findById({ _id: id }).exec()
-      return user
+    getUser: async (parent, args, ctx, info) => {
+      // const user = await models.user.findById({ _id: id }).exec()
+      // return user
+      return ctrs.user.getUser(parent, ctx.models.user, args)
     }
     // login: async (parent, { name, password }, { models, req }, info) => {
     //   const user = await models.user.findOne({ name }).exec()
@@ -31,10 +33,8 @@ export default {
     // }
   },
   Mutation: {
-    createUser: async (parent, { username, fullName, avatar, email, phone, password, rolesId }, { models }, info) => {
-      const roles = [...rolesId]
-      const user = await models.user.create({ username, fullName, avatar, email, phone, password, roles })
-      return user
+    createUser: async (parent, args, { models }, info) => {
+      return ctrs.user.createUser(models.user, args)
     }
   }
 }

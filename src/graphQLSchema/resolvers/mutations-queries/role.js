@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { AuthenticationError } from 'apollo-server'
-import graphqlHepler from '../../../core/helper/graphql'
+import ctrs from '../controller'
 
 export default {
   Query: {
     getRole: async (parent, { role: roleField }, { models, me }, info) => {
       const { id } = roleField
       const role = await models.role.findById({ _id: id }).exec()
-      GraphqlEx.reponse(role)
+      // GraphqlEx.reponse(role)
       return role
     }
     // login: async (parent, { name, password }, { models, req }, info) => {
@@ -34,10 +34,10 @@ export default {
     // }
   },
   Mutation: {
-    createRole: async (parent, { role: roleField }, { models }, info) => {
-      const { name, description, permission } = roleField
-      const role = await graphqlHepler.create(models.role, { name, description, permission })
-      return role
+    createRole: async (parent, { role: args }, { models }, info) => {
+      // const { name, description, permission } = roleField
+      // const role = await graphqlHepler.create(models.role, { name, description, permission })
+      return ctrs.role.createRole(models.role, parent, args)
     }
   }
 }
