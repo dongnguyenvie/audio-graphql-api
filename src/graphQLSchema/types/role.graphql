@@ -2,8 +2,8 @@ type Role {
   name: String!
   description: String
   permission: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input InputCreateRole {

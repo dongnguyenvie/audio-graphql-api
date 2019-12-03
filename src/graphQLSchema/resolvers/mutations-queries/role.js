@@ -37,7 +37,7 @@ export default {
     createRole: async (parent, { role: args }, { models }, info) => {
       // const { name, description, permission } = roleField
       // const role = await graphqlHepler.create(models.role, { name, description, permission })
-      return ctrs.role.createRole(models.role, parent, args)
+      return await ctrs.role.createRole(models.role, parent, args)
     }
   }
 }

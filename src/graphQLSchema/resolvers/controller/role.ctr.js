@@ -1,11 +1,11 @@
-import hepler from '../../../core/helper/graphql'
+import modelHepler from '../../../core/helper/model'
 
 class role {
   static async getRole(model, _, args) {
-    return await hepler.findOne(model, args)
+    return modelHepler.findOne(model, args)
   }
   static async createRole(model, _, args) {
-    return await hepler.create(model, args)
+    return modelHepler.create(model, args)
   }
 }
 

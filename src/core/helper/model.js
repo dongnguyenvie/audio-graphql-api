@@ -1,14 +1,20 @@
 import logger from '../../utils/logger'
 
 const METHOD = {
-  CREATE: 'Create'
+  CREATE: 'Create',
+  GET: 'Get'
 }
-class GralhqlHelper {
-  static async response(asyncData, modelNm, method) {
+
+/**
+ * ModelHepler
+ * @see {@href https://mongoosejs.com/docs/api/schema.html#schema_Schema}
+ */
+class ModelHepler {
+  static async responseExec(asyncData, modelNm, method) {
     let response = {}
     try {
-      const createdRecord = await asyncData
-      response = { success: true, result: createdRecord }
+      const docs = await asyncData
+      response = { success: true, result: docs }
     } catch (error) {
       logger.error(error)
       response = {
@@ -18,6 +24,7 @@ class GralhqlHelper {
     }
     return response
   }
+
   static async findAll(model, conditions = {}, projection = '', options = {}) {
     const foundResults = await model.find(conditions, projection, options)
 
@@ -44,27 +51,41 @@ class GralhqlHelper {
     }
   }
 
-  static async findOne(model, conditions = {}, projection = '', options = {}, populate = []) {
-    let foundResults
-    if (populate) {
-      foundResults = await model.findOne(conditions, projection, options).populate(populate)
-    } else {
-      foundResults = await model.findOne(conditions, projection, options)
-    }
-
-    return {
-      ...(!foundResults
-        ? {
-            success: false,
-            message: `Get ${this.getModelName(model)} failed!`
-          }
-        : { success: true, result: foundResults })
-    }
-  }
-  static async create(model, args) {
+  /**
+   * findOne
+   * 
+   * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOne}
+   * @param {Schema} model The Schema instance
+   * @param {Object} conditions Conditions
+   * @param {Object|String} projection  Optional fields to return, see Query.prototype.select()
+   * @param {Object} options Optional see Query.prototype.setOptions()
+   * @param {*} populate don't used
+   * @returns {Promise} response
+   */
+  static async findOne(model, conditions = {}, projection = '', options = {}, populate) {
+    let asyncData
     const modelNm = this.getModelName(model)
-    return await this.response(model.create(args), modelNm, METHOD.CREATE)
+    if (populate) {
+      asyncData = model.findOne(conditions, projection, options).populate(populate)
+    } else {
+      asyncData = model.findOne(conditions, projection, options)
+    }
+    return await this.responseExec(asyncData, modelNm, METHOD.GET)
   }
+
+  /**
+   * create
+   * 
+   * @see {@href https://mongoosejs.com/docs/api.html#model_Model.create}
+   * @param {*} model 
+   * @param {*} docs 
+   */
+  static async create(model, docs = {}) {
+    const modelNm = this.getModelName(model)
+    const asyncData = model.create(docs)
+    return await this.responseExec(asyncData, modelNm, METHOD.CREATE)
+  }
+
   static async update(model, conditions = {}, update = {}, options = {}) {
     const updatedRecord = await model.findOneAndUpdate(conditions, update, options)
 
@@ -114,4 +135,4 @@ class GralhqlHelper {
   }
 }
 
-export default GralhqlHelper
+export default ModelHepler

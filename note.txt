@@ -4,3 +4,14 @@
   user(id: ID!): User!
   login(name: String!, password: String!): Token! @me
   isLogin: ParseToken @auth(requires: ADMIN) @me
+
+/**
+ * 
+ * Projection
+ * db.COLLECTION_NAME.find({condition},{field1:1,field2:0,...})
+ * Mặc định, khi truy vấn trong MongoDB (find()) kết quả trả về sẽ gồm tất cả các field trong document. Để giới hạn số lượng dữ liệu mà MongoDB gửi tới ứng dụng, bạn có thể sử dụng projection để chỉ rõ những field nào được trả về, những field nào không được trả về khi truy vấn.
+ * {condition}: là điều kiện tìm kiếm, nếu bạn để {} thì nó sẽ tìm tất cả document.
+ * field1:1: biểu thị field1 sẽ được hiển thị trong kết quả trả về. (Mặc định trường _id luôn trược trả về)
+ * field2:0: biểu thị field2 sẽ không được hiển thị trong kết quả trả về.
+ */
+ 

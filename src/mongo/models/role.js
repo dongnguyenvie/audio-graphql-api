@@ -15,7 +15,7 @@ const roleSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: false
+    timestamps: true
   }
 )
 

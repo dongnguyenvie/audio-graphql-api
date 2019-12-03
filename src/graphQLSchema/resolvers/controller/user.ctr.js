@@ -1,11 +1,11 @@
-import hepler from '../../../core/helper/graphql'
+import modelHepler from '../../../core/helper/model'
 
 class user {
   static getUser(_, args, model) {
-    return hepler.findOne(model, args)
+    return modelHepler.findOne(model, args)
   }
   static createUser(_, args, model) {
-    return hepler.create(model, args)
+    return modelHepler.create(model, args)
   }
 }
 
