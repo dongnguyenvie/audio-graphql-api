@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,8 +21,8 @@ const userSchema = new mongoose.Schema(
       type: String
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
     roles: [
       {
@@ -39,5 +40,6 @@ userSchema.pre('save', function() {
   const hashedPassword = bcrypt.hashSync(this.password, 12)
   this.password = hashedPassword
 })
+userSchema.plugin(mongoosePaginate)
 
 export const user = mongoose.model('User', userSchema)

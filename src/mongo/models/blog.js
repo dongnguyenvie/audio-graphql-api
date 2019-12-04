@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const blogSchema = new mongoose.Schema(
   {
@@ -24,4 +25,5 @@ const blogSchema = new mongoose.Schema(
   }
 )
 
+blogSchema.plugin(mongoosePaginate)
 export const blog = mongoose.model('Blog', blogSchema)

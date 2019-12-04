@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const metaDataSchema = new mongoose.Schema(
   {
@@ -25,4 +26,5 @@ const metaDataSchema = new mongoose.Schema(
   }
 )
 
+metaDataSchema.plugin(mongoosePaginate)
 export const metaData = mongoose.model('MetaData', metaDataSchema)

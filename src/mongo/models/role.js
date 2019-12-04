@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const roleSchema = new mongoose.Schema(
   {
@@ -19,4 +20,5 @@ const roleSchema = new mongoose.Schema(
   }
 )
 
+roleSchema.plugin(mongoosePaginate)
 export const role = mongoose.model('Role', roleSchema)

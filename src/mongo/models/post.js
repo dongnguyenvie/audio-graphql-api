@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const postSchema = new mongoose.Schema(
   {
@@ -23,11 +24,11 @@ const postSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: 'MetaData'
     },
-    categories : [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Category'
-        }
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Category'
+      }
     ]
   },
   {
@@ -35,4 +36,5 @@ const postSchema = new mongoose.Schema(
   }
 )
 
+postSchema.plugin(mongoosePaginate)
 export const post = mongoose.model('Post', postSchema)

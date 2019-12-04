@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const commentSchema = new mongoose.Schema(
   {
@@ -26,4 +27,5 @@ const commentSchema = new mongoose.Schema(
   }
 )
 
+commentSchema.plugin(mongoosePaginate)
 export const comment = mongoose.model('Comment', commentSchema)

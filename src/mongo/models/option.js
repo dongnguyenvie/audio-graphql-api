@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const optionSchema = new mongoose.Schema(
   {
@@ -25,4 +26,5 @@ const optionSchema = new mongoose.Schema(
   }
 )
 
+optionSchema.plugin(mongoosePaginate)
 export const option = mongoose.model('Option', optionSchema)
