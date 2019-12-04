@@ -9,7 +9,7 @@ input InputCreateUser {
   email: String!
   phone: String
   password: String!
-  roleId: [String]
+  roles: [String]!
 }
 
 input InputUpdateUser {
@@ -19,7 +19,7 @@ input InputUpdateUser {
   email: String!
   phone: String
   password: String!
-  roleId: [String]
+  roles: [String]!
 }
 
 input InputChangePassword {
@@ -34,6 +34,7 @@ input inputUserQuery {
 }
 
 type User {
+  id: ID
   username: String!
   fullName: String
   avatar: String
@@ -68,7 +69,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createUser(user: InputCreateUser): User!
+  createUser(user: InputCreateUser): UserResponse!
   updateUser(user: InputUpdateUser!): UserResponse!
   deleteUser(user: InputRemoveUser): UserResponse
   changePassword(user: InputChangePassword): UserResponse!

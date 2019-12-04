@@ -12,14 +12,15 @@ class Helper {
     return this.rename('id', '_id', _.cloneDeep(obj))
   }
 
-  static getProjection(info) {
-    let projection = Object.keys(_.get(graphqlFields(info), 'result'))
+  static getProjection(info, rootField = 'result') {
+    let projection = Object.keys(rootField ? _.get(graphqlFields(info), rootField) : graphqlFields(info))
+
     if (_.isArray(projection) && !_.isEmpty(projection)) {
       projection = projection.join(' ')
     } else {
       projection = ''
     }
-    console.log(`projection`, projection)
+
     return projection
   }
 }

@@ -29,14 +29,14 @@ class ModelHeplers {
   }
 
   /**
-   * 
+   *
    * findAll
-   * 
+   *
    * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.find}
-   * @param {*} model 
-   * @param {*} conditions 
-   * @param {*} projection 
-   * @param {*} options 
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} projection
+   * @param {*} options
    */
   static async findAll(model, conditions = {}, projection = '', options = {}) {
     const asyncData = model.find(conditions, projection, options)
@@ -49,16 +49,16 @@ class ModelHeplers {
     return {
       ...(!foundResults
         ? {
-          success: false,
-          message: `Get ${this.getModelName(model)} failed!`
-        }
+            success: false,
+            message: `Get ${this.getModelName(model)} failed!`
+          }
         : { success: true, result: foundResults })
     }
   }
 
   /**
    * findOne
-   * 
+   *
    * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOne}
    * @param {Schema} model The Schema instance
    * @param {Object} conditions Conditions
@@ -79,10 +79,10 @@ class ModelHeplers {
 
   /**
    * create
-   * 
+   *
    * @see {@href https://mongoosejs.com/docs/api.html#model_Model.create}
-   * @param {*} model 
-   * @param {*} docs 
+   * @param {*} model
+   * @param {*} docs
    */
   static async create(model, docs = {}) {
     const asyncData = model.create(docs)
@@ -91,12 +91,12 @@ class ModelHeplers {
 
   /**
    * Update
-   * 
+   *
    * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate}
-   * @param {*} model 
-   * @param {*} conditions 
-   * @param {*} update 
-   * @param {*} options 
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} update
+   * @param {*} options
    */
   static async update(model, conditions = {}, update = {}, options = {}) {
     Object.assign(options, {
@@ -108,11 +108,11 @@ class ModelHeplers {
 
   /**
    * Delete
-   * 
+   *
    * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete}
-   * @param {*} model 
-   * @param {*} conditions 
-   * @param {*} options 
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} options
    */
   static async delete(model, conditions = {}, options = {}) {
     const asyncData = model.findOneAndDelete(conditions, options)
@@ -125,9 +125,9 @@ class ModelHeplers {
     return {
       ...(!deletedRecord && !deletedRecord.ok
         ? {
-          success: false,
-          message: `Delete ${this.getModelName(model)} failed!`
-        }
+            success: false,
+            message: `Delete ${this.getModelName(model)} failed!`
+          }
         : { success: true })
     }
   }

@@ -1,4 +1,5 @@
 type Role {
+  id: ID
   name: String!
   description: String
   permission: Int!
