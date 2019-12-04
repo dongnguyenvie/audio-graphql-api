@@ -11,11 +11,11 @@ export default {
   Query: {
     getRole: async (_, args, { models, me }, info) => {
       const projection = helper.getProjection(info)
-      return ctrs[FIELD_NM].getRole(models[FIELD_NM], args[FIELD_NM], projection)
+      return ctrs[FIELD_NM].getRole(models[FIELD_NM], args[FIELD_NM], { projection })
     },
     getRoles: async (_, args, { models, me }, info) => {
       const projection = helper.getProjection(info)
-      return ctrs[FIELD_NM].getRoles(models[FIELD_NM], args[FIELD_NM], projection)
+      return ctrs[FIELD_NM].getRoles(models[FIELD_NM], args[FIELD_NM], { projection })
     }
   },
   Mutation: {
