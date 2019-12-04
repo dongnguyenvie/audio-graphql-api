@@ -29,9 +29,6 @@ class ModelHeplers {
   }
 
   /**
-   *
-   * findAll
-   *
    * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.find}
    * @param {*} model
    * @param {*} conditions
@@ -43,29 +40,25 @@ class ModelHeplers {
     return this.responseExec(model, asyncData, METHOD.GET)
   }
 
+  /**
+   * @see {@href https://github.com/aravindnc/mongoose-paginate-v2#modelpaginatequery-options-callback}
+   * @param {*} model 
+   * @param {*} conditions 
+   * @param {*} options 
+   */
   static async findPaging(model, conditions = {}, options = {}) {
-    const foundResults = await model.paginate(conditions, options)
-
-    return {
-      ...(!foundResults
-        ? {
-            success: false,
-            message: `Get ${this.getModelName(model)} failed!`
-          }
-        : { success: true, result: foundResults })
-    }
+    const asyncData = model.paginate(conditions, options)
+    return this.responseExec(model, asyncData, METHOD.GET)
   }
 
   /**
-   * findOne
-   *
    * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOne}
    * @param {Schema} model The Schema instance
    * @param {Object} conditions Conditions
    * @param {Object|String} projection  Optional fields to return, see Query.prototype.select()
    * @param {Object} options Optional see Query.prototype.setOptions()
    * @param {*} populate don't used
-   * @returns {Promise} response
+   * @returns {Promise} docs
    */
   static async findOne(model, conditions = {}, projection = '', options = {}, populate) {
     let asyncData
@@ -78,8 +71,6 @@ class ModelHeplers {
   }
 
   /**
-   * create
-   *
    * @see {@href https://mongoosejs.com/docs/api.html#model_Model.create}
    * @param {*} model
    * @param {*} docs
@@ -90,8 +81,6 @@ class ModelHeplers {
   }
 
   /**
-   * Update
-   *
    * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate}
    * @param {*} model
    * @param {*} conditions
@@ -107,8 +96,6 @@ class ModelHeplers {
   }
 
   /**
-   * Delete
-   *
    * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete}
    * @param {*} model
    * @param {*} conditions
@@ -119,24 +106,28 @@ class ModelHeplers {
     return this.responseExec(model, asyncData, METHOD.DELETE)
   }
 
+  /**
+   * @see {@href https://mongoosejs.com/docs/api/query.html#query_Query-deleteMany}
+   * @param {*} model 
+   * @param {*} conditions filter 
+   * @param {*} options 
+   */
   static async deleteMany(model, conditions = {}, options = {}) {
-    const deletedRecord = await model.deleteMany(conditions, options)
-
-    return {
-      ...(!deletedRecord && !deletedRecord.ok
-        ? {
-            success: false,
-            message: `Delete ${this.getModelName(model)} failed!`
-          }
-        : { success: true })
-    }
+    const asyncData = await model.deleteMany(conditions, options)
+    return this.responseExec(mode, asyncData, METHOD.DELETE)
   }
+
   static async softDelete(model, conditions = {}, options = {}) {
     return this.update(model, conditions, { isDel: true }, options)
   }
   static async recover(model, conditions = {}, options = {}) {
     return this.update(model, conditions, { isDel: false }, options)
   }
+
+  /**
+   * @see {@href https://stackoverflow.com/questions/43331706/how-to-get-collection-name-from-a-mongoose-model-object?answertab=active#tab-top}
+   * @param {*} model 
+   */
   static getModelName(model) {
     return model.collection.collectionName
   }
