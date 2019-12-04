@@ -23,5 +23,31 @@ class Helper {
 
     return projection
   }
+
+  /**
+   *
+   * @param {*} field
+   * @param {*} fieldsPopulate
+   */
+  static mapPopulate(field, fieldsPopulate) {
+    /**
+     * @param {Docs} rootDocs
+     * @param {Object} args
+     * @param {Object} context
+     * @param {Model} context.models
+     * @param {Model} context.req
+     * @param {Object} info
+     */
+    const getPopulate = (fieldNm, populateFieldNm) => async (rootDocs, args, { models }, info) => {
+      const projection = this.getProjection(info, false)
+      const docs = await models[fieldNm].findById(rootDocs._id, populateFieldNm).populate(populateFieldNm, projection)
+      return !_.isNull(docs) ? docs[populateFieldNm] : []
+    }
+
+    return fieldsPopulate.reduce((acc, populateNm) => {
+      acc[populateNm] = getPopulate(field, populateNm)
+      return acc
+    }, {})
+  }
 }
 export default Helper
