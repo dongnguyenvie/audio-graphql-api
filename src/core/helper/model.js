@@ -2,16 +2,19 @@ import logger from '../../utils/logger'
 
 const METHOD = {
   CREATE: 'Create',
-  GET: 'Get'
+  GET: 'Get',
+  UPDATE: 'Update',
+  DELETE: 'Delete'
 }
 
 /**
- * ModelHepler
+ * ModelHeplers
  * @see {@href https://mongoosejs.com/docs/api/schema.html#schema_Schema}
  */
-class ModelHepler {
-  static async responseExec(asyncData, modelNm, method) {
+class ModelHeplers {
+  static async responseExec(model, asyncData, method) {
     let response = {}
+    const modelNm = this.getModelName(model)
     try {
       const docs = await asyncData
       response = { success: true, result: docs }
@@ -25,17 +28,19 @@ class ModelHepler {
     return response
   }
 
+  /**
+   * 
+   * findAll
+   * 
+   * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.find}
+   * @param {*} model 
+   * @param {*} conditions 
+   * @param {*} projection 
+   * @param {*} options 
+   */
   static async findAll(model, conditions = {}, projection = '', options = {}) {
-    const foundResults = await model.find(conditions, projection, options)
-
-    return {
-      ...(!foundResults
-        ? {
-            success: false,
-            message: `Get ${this.getModelName(model)} failed!`
-          }
-        : { success: true, result: foundResults })
-    }
+    const asyncData = model.find(conditions, projection, options)
+    return this.responseExec(model, asyncData, METHOD.GET)
   }
 
   static async findPaging(model, conditions = {}, options = {}) {
@@ -44,9 +49,9 @@ class ModelHepler {
     return {
       ...(!foundResults
         ? {
-            success: false,
-            message: `Get ${this.getModelName(model)} failed!`
-          }
+          success: false,
+          message: `Get ${this.getModelName(model)} failed!`
+        }
         : { success: true, result: foundResults })
     }
   }
@@ -63,15 +68,13 @@ class ModelHepler {
    * @returns {Promise} response
    */
   static async findOne(model, conditions = {}, projection = '', options = {}, populate) {
-    console.log(`conditions`, conditions)
     let asyncData
-    const modelNm = this.getModelName(model)
     if (populate) {
       asyncData = model.findOne(conditions, projection, options).populate(populate)
     } else {
       asyncData = model.findOne(conditions, projection, options)
     }
-    return await this.responseExec(asyncData, modelNm, METHOD.GET)
+    return await this.responseExec(model, asyncData, METHOD.GET)
   }
 
   /**
@@ -82,46 +85,49 @@ class ModelHepler {
    * @param {*} docs 
    */
   static async create(model, docs = {}) {
-    const modelNm = this.getModelName(model)
     const asyncData = model.create(docs)
-    return await this.responseExec(asyncData, modelNm, METHOD.CREATE)
+    return this.responseExec(model, asyncData, METHOD.CREATE)
   }
 
+  /**
+   * Update
+   * 
+   * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate}
+   * @param {*} model 
+   * @param {*} conditions 
+   * @param {*} update 
+   * @param {*} options 
+   */
   static async update(model, conditions = {}, update = {}, options = {}) {
-    const updatedRecord = await model.findOneAndUpdate(conditions, update, options)
-
-    updatedRecord && (await updatedRecord.save())
-
-    return {
-      ...(!updatedRecord
-        ? {
-            success: false,
-            message: `Update ${this.getModelName(model)} failed!`
-          }
-        : { success: true, result: updatedRecord })
-    }
+    Object.assign(options, {
+      new: true // bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+    })
+    const asyncData = model.findOneAndUpdate(conditions, update, options)
+    return this.responseExec(model, asyncData, METHOD.UPDATE)
   }
+
+  /**
+   * Delete
+   * 
+   * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete}
+   * @param {*} model 
+   * @param {*} conditions 
+   * @param {*} options 
+   */
   static async delete(model, conditions = {}, options = {}) {
-    const deletedRecord = await model.findOneAndDelete(conditions, options)
-
-    return {
-      ...(!deletedRecord
-        ? {
-            success: false,
-            message: `Delete ${this.getModelName(model)} failed!`
-          }
-        : { success: true, result: deletedRecord })
-    }
+    const asyncData = model.findOneAndDelete(conditions, options)
+    return this.responseExec(model, asyncData, METHOD.DELETE)
   }
+
   static async deleteMany(model, conditions = {}, options = {}) {
     const deletedRecord = await model.deleteMany(conditions, options)
 
     return {
       ...(!deletedRecord && !deletedRecord.ok
         ? {
-            success: false,
-            message: `Delete ${this.getModelName(model)} failed!`
-          }
+          success: false,
+          message: `Delete ${this.getModelName(model)} failed!`
+        }
         : { success: true })
     }
   }
@@ -136,4 +142,4 @@ class ModelHepler {
   }
 }
 
-export default ModelHepler
+export default ModelHeplers

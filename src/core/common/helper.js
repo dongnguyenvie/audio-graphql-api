@@ -13,8 +13,14 @@ class Helper {
   }
 
   static getProjection(info) {
-    const projection = Object.keys(_.get(graphqlFields(info), 'result'))
-    return projection.join(' ')
+    let projection = Object.keys(_.get(graphqlFields(info), 'result'))
+    if (_.isArray(projection) && !_.isEmpty(projection)) {
+      projection = projection.join(' ')
+    } else {
+      projection = ''
+    }
+    console.log(`projection`, projection)
+    return projection
   }
 }
 export default Helper
