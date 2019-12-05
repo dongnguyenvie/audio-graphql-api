@@ -1,5 +1,6 @@
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
+import * as constants from '../../../core/types'
 
 import _ from 'lodash'
 class role {
@@ -8,7 +9,7 @@ class role {
     return modelHeplers.findOne(model, { _id }, projection)
   }
   static async getRoles(model, args, { projection } = {}, options = {}) {
-    return modelHeplers.findAll(model, args, { projection })
+    return modelHeplers.findPaging(model, args, projection, options)
   }
   static async createRole(model, args) {
     return modelHeplers.create(model, args)

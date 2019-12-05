@@ -17,6 +17,7 @@ class ModelHeplers {
     const modelNm = this.getModelName(model)
     try {
       const docs = await asyncData
+      console.log(`docs`, docs)
       response = { success: true, result: docs }
     } catch (error) {
       logger.error(error)
@@ -46,7 +47,7 @@ class ModelHeplers {
    * @param {*} conditions 
    * @param {*} options 
    */
-  static async findPaging(model, conditions = {}, options = {}) {
+  static async findPaging(model, conditions = {}, projection = '', options = {}) {
     const asyncData = model.paginate(conditions, options)
     return this.responseExec(model, asyncData, METHOD.GET)
   }

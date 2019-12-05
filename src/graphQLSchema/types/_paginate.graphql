@@ -1,0 +1,10 @@
+input InputPagingRequest {
+    # https://docs.mongodb.com/manual/tutorial/query-documents/
+    query: JSON
+    populate: JSON
+    page: Int @validate(condition:[{conName:"isInt"}]),
+    limit: Int @validate(condition:[{conName:"isInt"}]),
+    # use value asc, desc, ascending, descending, 1, and -1
+    # { field: 'asc', test: -1 }: sort field ascending and test descending
+    sort: JSON
+}

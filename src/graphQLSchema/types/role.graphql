@@ -28,6 +28,21 @@ input InputDeleteRole {
   id: ID!
 }
 
+type RolePaginate {
+    docs: [Role]
+    totalDocs: Int
+    limit: Int
+    hasPrevPage: Boolean
+    hasNextPage: Boolean
+    page: Int
+    totalPages: Int
+    offset: Int
+    prevPage: Int
+    nextPage: Int
+    pagingCounter: Int
+    meta: JSON
+}
+
 type RoleResponse {
   success: Boolean!
   message: String
@@ -42,7 +57,7 @@ type RolesResponse {
 
 extend type Query {
   getRole(role: InputRoleQuery!): RoleResponse
-  getRoles: RolesResponse
+  getRoles(filters: InputPagingRequest): RolePaginate
 }
 
 extend type Mutation {
