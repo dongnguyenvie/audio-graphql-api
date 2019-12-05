@@ -17,7 +17,6 @@ class ModelHeplers {
     const modelNm = this.getModelName(model)
     try {
       const docs = await asyncData
-      console.log(`docs`, docs)
       response = { success: true, result: docs }
     } catch (error) {
       logger.error(error)
@@ -25,6 +24,15 @@ class ModelHeplers {
         success: false,
         message: `${method} ${modelNm} failed!`
       }
+    }
+    return response
+  }
+  static async responseDefault(model, asyncData, method) {
+    let response = {}
+    try {
+      response = await asyncData
+    } catch (error) {
+      logger.error(error)
     }
     return response
   }
@@ -43,13 +51,14 @@ class ModelHeplers {
 
   /**
    * @see {@href https://github.com/aravindnc/mongoose-paginate-v2#modelpaginatequery-options-callback}
-   * @param {*} model 
-   * @param {*} conditions 
-   * @param {*} options 
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} options
    */
   static async findPaging(model, conditions = {}, projection = '', options = {}) {
+    console.log(`conditions`, conditions)
     const asyncData = model.paginate(conditions, options)
-    return this.responseExec(model, asyncData, METHOD.GET)
+    return this.responseDefault(model, asyncData, METHOD.GET)
   }
 
   /**
@@ -109,9 +118,9 @@ class ModelHeplers {
 
   /**
    * @see {@href https://mongoosejs.com/docs/api/query.html#query_Query-deleteMany}
-   * @param {*} model 
-   * @param {*} conditions filter 
-   * @param {*} options 
+   * @param {*} model
+   * @param {*} conditions filter
+   * @param {*} options
    */
   static async deleteMany(model, conditions = {}, options = {}) {
     const asyncData = await model.deleteMany(conditions, options)
@@ -127,7 +136,7 @@ class ModelHeplers {
 
   /**
    * @see {@href https://stackoverflow.com/questions/43331706/how-to-get-collection-name-from-a-mongoose-model-object?answertab=active#tab-top}
-   * @param {*} model 
+   * @param {*} model
    */
   static getModelName(model) {
     return model.collection.collectionName

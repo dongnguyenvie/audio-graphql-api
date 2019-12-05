@@ -16,18 +16,23 @@ export default {
     },
     getRoles: async (_, args, { models, me }, info) => {
       const projection = helper.getProjection(info, 'docs')
-      return ctrs[FIELD].getRoles(models[FIELD], args[FIELD], { projection }, { [constants.INPUT_FILTERS_KEY]: args[constants.INPUT_FILTERS_KEY] })
+      const _args = args[constants.INPUT_FILTERS_KEY]
+      const { query: conditions = {}, ...filters } = _args
+      return ctrs[FIELD].getRoles(models[FIELD], conditions, { projection, filters })
     }
   },
   Mutation: {
     createRole: async (_, args, { models }, info) => {
-      return ctrs[FIELD].createRole(models[FIELD], args[FIELD])
+      const conditions = args[FIELD]
+      return ctrs[FIELD].createRole(models[FIELD], conditions)
     },
     updateRole: async (_, args, { models }, info) => {
-      return ctrs[FIELD].updateRole(models[FIELD], args[FIELD])
+      const conditions = args[FIELD]
+      return ctrs[FIELD].updateRole(models[FIELD], conditions)
     },
     deleteRole: async (_, args, { models }, info) => {
-      return ctrs[FIELD].deleteRole(models[FIELD], args[FIELD])
+      const conditions = args[FIELD]
+      return ctrs[FIELD].deleteRole(models[FIELD], conditions)
     }
   }
 }
