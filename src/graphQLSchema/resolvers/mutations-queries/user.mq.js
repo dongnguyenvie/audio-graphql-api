@@ -31,9 +31,9 @@ export default {
       const conditions = args[FIELD];
       return ctrs[FIELD].deleteUser(models[FIELD], conditions)
     },
-    changePassword: async (_, args, { models }, info) => {
+    changePassword: async (_, args, { models, req }, info) => {
       const conditions = args[FIELD];
-      return ctrs[FIELD].changePassword(models[FIELD], conditions)
+      return ctrs[FIELD].changePassword(models[FIELD], conditions, { req })
     }
   }
 }

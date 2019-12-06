@@ -29,7 +29,7 @@ input InputChangePassword {
   confirmPass: String! @validate(schema: "user", condition: [{ key: "isEmpty" }])
 }
 
-input inputUserQuery {
+input InputUserQuery {
   id: String!
 }
 
@@ -65,7 +65,7 @@ type UsersResponse {
 
 extend type Query {
   getUsers: UsersResponse
-  getUser(user: inputUserQuery!): UserResponse
+  getUser(user: InputUserQuery!): UserResponse
 }
 
 extend type Mutation {

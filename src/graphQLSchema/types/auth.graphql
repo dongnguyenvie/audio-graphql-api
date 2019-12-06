@@ -1,0 +1,16 @@
+input InputLoginQuery {
+    username: String!
+    password: String!
+    rememberMe: Boolean!
+}
+
+type LoginReponse {
+    success: Boolean
+    user: User
+    token: String
+    role: [Role]
+}
+
+extend type Query {
+  login(user: InputLoginQuery!): LoginReponse
+}

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import graphqlFields from 'graphql-fields'
-
+import config from '../../../config'
 class Helper {
   static rename(oldProp, newProp, { [oldProp]: old, ...others }) {
     return {
@@ -48,6 +48,15 @@ class Helper {
       acc[populateNm] = getPopulate(field, populateNm)
       return acc
     }, {})
+  }
+
+  /**
+   * 
+   * @param {*} originalVal 
+   * @param {*} otherVal 
+   */
+  static comparePassword(originalVal, otherVal) {
+    return bcrypt.compareSync(originalVal, otherVal)
   }
 }
 export default Helper

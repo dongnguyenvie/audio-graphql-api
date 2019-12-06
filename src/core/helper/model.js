@@ -32,6 +32,8 @@ class ModelHeplers {
     try {
       response = await asyncData
     } catch (error) {
+      // response = `${method} ${modelNm} failed!`
+      response = false
       logger.error(error)
     }
     return response
@@ -66,17 +68,15 @@ class ModelHeplers {
    * @param {Object} conditions Conditions
    * @param {Object|String} projection  Optional fields to return, see Query.prototype.select()
    * @param {Object} options Optional see Query.prototype.setOptions()
-   * @param {*} populate don't used
+   * @param {Boolean} docsFlg if default reponse then docsFlg = true
    * @returns {Promise} docs
    */
-  static async findOne(model, conditions = {}, projection = '', options = {}, populate) {
-    let asyncData
-    if (populate) {
-      asyncData = model.findOne(conditions, projection, options).populate(populate)
-    } else {
-      asyncData = model.findOne(conditions, projection, options)
+  static async findOne(model, conditions = {}, projection = '', options = {}, docsFlg = false) {
+    const asyncData = model.findOne(conditions, projection, options)
+    if (docsFlg) {
+      return this.responseDefault(model, asyncData, METHOD.GET);
     }
-    return await this.responseExec(model, asyncData, METHOD.GET)
+    return this.responseExec(model, asyncData, METHOD.GET)
   }
 
   /**
@@ -99,7 +99,7 @@ class ModelHeplers {
   static async update(model, conditions = {}, update = {}, options = {}) {
     Object.assign(options, {
       new: true // bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
-    })
+    }, options)
     const asyncData = model.findOneAndUpdate(conditions, update, options)
     return this.responseExec(model, asyncData, METHOD.UPDATE)
   }
