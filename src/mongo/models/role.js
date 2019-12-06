@@ -13,6 +13,10 @@ const roleSchema = new mongoose.Schema(
     },
     permission: {
       type: Number
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     }
   },
   {

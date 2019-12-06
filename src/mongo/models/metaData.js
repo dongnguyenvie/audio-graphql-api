@@ -19,6 +19,14 @@ const metaDataSchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: true
+    },
+    tags: {
+      type: Array,
+      default: []
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     }
   },
   {

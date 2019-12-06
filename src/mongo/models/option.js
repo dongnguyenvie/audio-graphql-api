@@ -19,6 +19,10 @@ const optionSchema = new mongoose.Schema(
     type: {
       type: String,
       default: ''
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     }
   },
   {

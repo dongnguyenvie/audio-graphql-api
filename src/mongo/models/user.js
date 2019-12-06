@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    isDelete: {
+      type: Boolean,
+      default: false
+    },
     roles: [
       {
         type: Schema.Types.ObjectId,

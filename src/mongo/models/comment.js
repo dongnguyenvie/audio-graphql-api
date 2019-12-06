@@ -20,6 +20,10 @@ const commentSchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: true
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     }
   },
   {

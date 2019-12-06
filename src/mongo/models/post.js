@@ -24,6 +24,10 @@ const postSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: 'MetaData'
     },
+    isDelete: {
+      type: Boolean,
+      default: false
+    },
     categories: [
       {
         type: Schema.Types.ObjectId,

@@ -18,6 +18,10 @@ const blogSchema = new mongoose.Schema(
     metaData: {
       type: Schema.Types.ObjectId,
       ref: 'MetaData'
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     }
   },
   {

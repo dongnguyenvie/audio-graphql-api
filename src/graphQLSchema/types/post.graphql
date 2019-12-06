@@ -1,0 +1,73 @@
+input InputCreatePost {
+  title: String
+  content: String
+  blog: ID
+  user: ID
+  metaData: ID
+  categories: [ID]
+  jsonLD: JSON
+  status: Boolean
+  tags: [String]
+}
+
+input InputUpdatePost {
+  id: ID!
+  title: String
+  content: String
+  blog: ID
+  user: ID
+  metaData: ID
+  categories: [ID]
+  jsonLD: JSON
+  status: Boolean
+}
+
+input InputPostQuery {
+  id: ID!
+}
+input InputRemovePost {
+  id: ID!
+}
+
+type Post {
+  title: String
+  content: String
+  blog: ID
+  user: ID
+  metaData: ID
+  categories: [ID]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type PostPaginate {
+  docs: [Post]
+  totalDocs: Int
+  limit: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  page: Int
+  totalPages: Int
+  offset: Int
+  prevPage: Int
+  nextPage: Int
+  pagingCounter: Int
+  meta: JSON
+}
+
+type PostReponse {
+  success: Boolean!
+  message: String
+  result: [Post]
+}
+
+extend type Query {
+  getPosts(filters: InputPagingRequest): PostPaginate!
+  getPost(post: InputPostQuery): PostReponse!
+}
+
+extend type Mutation {
+  createPost(user: InputCreatePost!): PostReponse!
+  updatePost(user: InputUpdatePost!): PostReponse!
+  deletePost(user: InputRemovePost!): PostReponse!
+}

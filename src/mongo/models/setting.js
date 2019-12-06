@@ -18,6 +18,10 @@ const settingSchema = new mongoose.Schema(
     default: {
       type: String,
       default: ''
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     }
   },
   {
