@@ -1,8 +1,9 @@
 const { SchemaDirectiveVisitor } = require('apollo-server')
 // const { defaultFieldResolver } = require('graphql')
 import { GraphQLNonNull, GraphQLScalarType } from 'graphql'
+import { CustomType } from '../resolvers/scalar/customType'
 // import EmailType from '../directive/email'
-const validate = class Validate extends SchemaDirectiveVisitor {
+class validate extends SchemaDirectiveVisitor {
   visitFieldDefinition(field) {
     this.wrapType(field)
   }
@@ -16,12 +17,13 @@ const validate = class Validate extends SchemaDirectiveVisitor {
   }
 
   wrapType(field) {
+    const fieldName = field.name;
     if (field.type instanceof GraphQLNonNull && field.type.ofType instanceof GraphQLScalarType) {
-      // field.type = new GraphQLNonNull(new EmailType(field.type.ofType))
+      field.type = new GraphQLNonNull(new CustomType(field.type.ofType, fieldName, this.args));
     } else if (field.type instanceof GraphQLScalarType) {
-      // field.type = new EmailType(field.type)
+      field.type = new CustomType(field.type, fieldName, this.args);
     } else {
-      throw new Error(`Not a scalar type: ${field.type}`)
+      throw new Error(`Not a scalar type: ${field.type}`);
     }
   }
 }

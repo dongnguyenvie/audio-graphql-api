@@ -23,10 +23,10 @@ input InputUpdateUser {
 }
 
 input InputChangePassword {
-  id: String! @validate(condition: [{ conName: "isEmpty" }])
-  oldPass: String! @validate(schema: "user", condition: [{ conName: "isEmpty" }])
-  newPass: String! @validate(schema: "user", condition: [{ conName: "isEmpty" }])
-  confirmPass: String! @validate(schema: "user", condition: [{ conName: "isEmpty" }])
+  id: String! @validate(condition: [{ key: "isEmpty" }])
+  oldPass: String! @validate(schema: "user", condition: [{ key: "isEmpty" }])
+  newPass: String! @validate(schema: "user", condition: [{ key: "isEmpty" }])
+  confirmPass: String! @validate(schema: "user", condition: [{ key: "isEmpty" }])
 }
 
 input inputUserQuery {

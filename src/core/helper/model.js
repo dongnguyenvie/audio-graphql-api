@@ -56,7 +56,6 @@ class ModelHeplers {
    * @param {*} options
    */
   static async findPaging(model, conditions = {}, projection = '', options = {}) {
-    console.log(`conditions`, conditions)
     const asyncData = model.paginate(conditions, options)
     return this.responseDefault(model, asyncData, METHOD.GET)
   }

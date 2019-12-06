@@ -2,11 +2,11 @@ import helper from '../../../core/common/helper'
 
 const FIELD = 'user'
 const FIELDS_POPULATE = ['roles']
+
 /**
  * In this case docs === userDocs
  * async (docs, args, context, info)
  */
-
 const User = {
   ...helper.mapPopulate(FIELD, FIELDS_POPULATE),
   // roles: async (docs, args, { models }, info) => {

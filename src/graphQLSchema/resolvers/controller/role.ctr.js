@@ -1,8 +1,6 @@
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
-import * as constants from '../../../core/types'
 import _ from 'lodash'
-import GraphQLJSON from 'graphql-type-json';
 class role {
   static async getRole(model, args, { projection } = {}, options = {}) {
     const { _id } = helper.mapToIndexDoc(args)

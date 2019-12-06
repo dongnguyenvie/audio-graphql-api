@@ -17,7 +17,9 @@ class user {
     const { _id } = helper.mapToIndexDoc(args)
     return modelHeplers.delete(model, { _id })
   }
-  static async changePassword(model, args, { projection }, options = {}) {}
+  static async changePassword(model, args, { projection } = {}, options = {}) {
+    return {}
+  }
 }
 
 export default { user }
