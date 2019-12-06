@@ -11,7 +11,8 @@ const metaDataSchema = new mongoose.Schema(
       default: ''
     },
     view: {
-      type: Number
+      type: Number,
+      default: 0
     },
     order: {
       type: Number
@@ -20,13 +21,13 @@ const metaDataSchema = new mongoose.Schema(
       type: Boolean,
       default: true
     },
+    like: {
+      type: Boolean,
+      default: 0
+    },
     tags: {
       type: Array,
       default: []
-    },
-    isDelete: {
-      type: Boolean,
-      default: false
     }
   },
   {

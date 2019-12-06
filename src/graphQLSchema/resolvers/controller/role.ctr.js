@@ -7,7 +7,8 @@ class role {
     return modelHeplers.findOne(model, { _id }, projection)
   }
   static async getRoles(model, args, { projection, filters } = {}, options = {}) {
-    return modelHeplers.findPaging(model, args, projection, filters)
+    Object.assign(options, { filters })
+    return modelHeplers.findPaging(model, args, projection, options)
   }
   static async createRole(model, args) {
     return modelHeplers.create(model, args)

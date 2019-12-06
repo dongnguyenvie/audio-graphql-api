@@ -39,6 +39,6 @@ const postSchema = new mongoose.Schema(
     timestamps: false
   }
 )
-
+postSchema.index({ title: 1 }, { sparse: true })
 postSchema.plugin(mongoosePaginate)
 export const post = mongoose.model('Post', postSchema)

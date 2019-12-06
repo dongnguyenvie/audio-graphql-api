@@ -12,7 +12,7 @@ const METHOD = {
  * @see {@href https://mongoosejs.com/docs/api/schema.html#schema_Schema}
  */
 class ModelHeplers {
-  static async responseExec(model, asyncData, method) {
+  static async execResponse(model, asyncData, method) {
     let response = {}
     const modelNm = this.getModelName(model)
     try {
@@ -27,7 +27,7 @@ class ModelHeplers {
     }
     return response
   }
-  static async responseDefault(model, asyncData, method) {
+  static async execDefaultResponse(model, asyncData, method) {
     let response = {}
     try {
       response = await asyncData
@@ -48,7 +48,7 @@ class ModelHeplers {
    */
   static async findAll(model, conditions = {}, projection = '', options = {}) {
     const asyncData = model.find(conditions, projection, options)
-    return this.responseExec(model, asyncData, METHOD.GET)
+    return this.execResponse(model, asyncData, METHOD.GET)
   }
 
   /**
@@ -57,9 +57,12 @@ class ModelHeplers {
    * @param {*} conditions
    * @param {*} options
    */
-  static async findPaging(model, conditions = {}, projection = '', options = {}) {
+  static async findPaging(model, conditions = {}, projection = '', { filters, defaultDocsFlg = true } = {}) {
     const asyncData = model.paginate(conditions, options)
-    return this.responseDefault(model, asyncData, METHOD.GET)
+    if (defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.GET)
+    }
+    return this.execResponse(model, asyncData, METHOD.GET)
   }
 
   /**
@@ -71,12 +74,12 @@ class ModelHeplers {
    * @param {Boolean} docsFlg if default reponse then docsFlg = true
    * @returns {Promise} docs
    */
-  static async findOne(model, conditions = {}, projection = '', options = {}, docsFlg = false) {
+  static async findOne(model, conditions = {}, projection = '', options = {}) {
     const asyncData = model.findOne(conditions, projection, options)
-    if (docsFlg) {
-      return this.responseDefault(model, asyncData, METHOD.GET);
+    if (options.defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.CREATE)
     }
-    return this.responseExec(model, asyncData, METHOD.GET)
+    return this.execResponse(model, asyncData, METHOD.GET)
   }
 
   /**
@@ -84,9 +87,12 @@ class ModelHeplers {
    * @param {*} model
    * @param {*} docs
    */
-  static async create(model, docs = {}) {
+  static async create(model, docs = {}, options = { defaultDocsFlg: false }) {
     const asyncData = model.create(docs)
-    return this.responseExec(model, asyncData, METHOD.CREATE)
+    if (defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.CREATE)
+    }
+    return this.execResponse(model, asyncData, METHOD.CREATE)
   }
 
   /**
@@ -97,11 +103,15 @@ class ModelHeplers {
    * @param {*} options
    */
   static async update(model, conditions = {}, update = {}, options = {}) {
-    Object.assign(options, {
-      new: true // bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
-    }, options)
-    const asyncData = model.findOneAndUpdate(conditions, update, options)
-    return this.responseExec(model, asyncData, METHOD.UPDATE)
+    const _options = {
+      new: true, // bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+      ...options
+    }
+    const asyncData = model.findOneAndUpdate(conditions, update, _options)
+    if (options.defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.UPDATE)
+    }
+    return this.execResponse(model, asyncData, METHOD.UPDATE)
   }
 
   /**
@@ -112,7 +122,10 @@ class ModelHeplers {
    */
   static async delete(model, conditions = {}, options = {}) {
     const asyncData = model.findOneAndDelete(conditions, options)
-    return this.responseExec(model, asyncData, METHOD.DELETE)
+    if (options.defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.DELETE)
+    }
+    return this.execResponse(model, asyncData, METHOD.DELETE)
   }
 
   /**
@@ -123,14 +136,45 @@ class ModelHeplers {
    */
   static async deleteMany(model, conditions = {}, options = {}) {
     const asyncData = await model.deleteMany(conditions, options)
-    return this.responseExec(mode, asyncData, METHOD.DELETE)
+    if (options.defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.DELETE)
+    }
+    return this.execResponse(mode, asyncData, METHOD.DELETE)
   }
 
+  /**
+   *
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} options
+   */
   static async softDelete(model, conditions = {}, options = {}) {
-    return this.update(model, conditions, { isDel: true }, options)
+    return this.update(mode, conditions, { isDelete: true }, options)
   }
+
+  /**
+   *
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} options
+   */
+  static async hardDelete(model, conditions = {}, options = {}) {
+    let _conditions = { isDelete: true, ...conditions }
+    const asyncData = model.remove(_conditions, options)
+    if (options.defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.DELETE)
+    }
+    return this.execResponse(model, asyncData, METHOD.DELETE)
+  }
+
+  /**
+   *
+   * @param {*} model
+   * @param {*} conditions
+   * @param {*} options
+   */
   static async recover(model, conditions = {}, options = {}) {
-    return this.update(model, conditions, { isDel: false }, options)
+    return this.update(model, conditions, { isDelete: false }, options)
   }
 
   /**

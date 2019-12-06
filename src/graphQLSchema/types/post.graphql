@@ -3,7 +3,6 @@ input InputCreatePost {
   content: String
   blog: ID
   user: ID
-  metaData: ID
   categories: [ID]
   jsonLD: JSON
   status: Boolean
