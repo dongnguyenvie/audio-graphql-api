@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import graphqlFields from 'graphql-fields'
 import config from '../../../config'
+import bcrypt from 'bcrypt'
 class Helper {
   static rename(oldProp, newProp, { [oldProp]: old, ...others }) {
     return {
@@ -50,13 +51,14 @@ class Helper {
     }, {})
   }
 
-  /**
-   * 
-   * @param {*} originalVal 
-   * @param {*} otherVal 
-   */
-  static comparePassword(originalVal, otherVal) {
-    return bcrypt.compareSync(originalVal, otherVal)
+/**
+ * @see {@link https://www.npmjs.com/package/bcrypt}
+ * 
+ * @param {*} plaintextPassword 
+ * @param {*} hashedPassword
+ */
+  static comparePassword(plaintextPassword, hashedPassword) {
+    return bcrypt.compareSync(plaintextPassword, hashedPassword)
   }
 }
 export default Helper

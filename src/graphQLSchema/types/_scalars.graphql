@@ -1,3 +1,5 @@
 scalar DateTime
 scalar JSON
 scalar Email
+# custom Validate at /scalar/customType.js
+scalar Validate

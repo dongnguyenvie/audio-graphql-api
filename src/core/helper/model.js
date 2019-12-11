@@ -9,7 +9,7 @@ const METHOD = {
 
 /**
  * ModelHeplers
- * @see {@href https://mongoosejs.com/docs/api/schema.html#schema_Schema}
+ * @see {@link https://mongoosejs.com/docs/api/schema.html#schema_Schema}
  */
 class ModelHeplers {
   static async execResponse(model, asyncData, method) {
@@ -40,7 +40,7 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.find}
+   * @see {@link https://mongoosejs.com/docs/api/model.html#model_Model.find}
    * @param {*} model
    * @param {*} conditions
    * @param {*} projection
@@ -52,13 +52,14 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://github.com/aravindnc/mongoose-paginate-v2#modelpaginatequery-options-callback}
+   * @see {@link https://github.com/aravindnc/mongoose-paginate-v2#modelpaginatequery-options-callback}
    * @param {*} model
    * @param {*} conditions
    * @param {*} options
    */
-  static async findPaging(model, conditions = {}, projection = '', { filters, defaultDocsFlg = true } = {}) {
-    const asyncData = model.paginate(conditions, options)
+  static async findPaging(model, conditions = {}, projection = '', options = {}) {
+    const { filters, defaultDocsFlg } = { defaultDocsFlg: true, ...options }
+    const asyncData = model.paginate(conditions, filters)
     if (defaultDocsFlg) {
       return this.execDefaultResponse(model, asyncData, METHOD.GET)
     }
@@ -66,7 +67,7 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOne}
+   * @see {@link https://mongoosejs.com/docs/api.html#model_Model.findOne}
    * @param {Schema} model The Schema instance
    * @param {Object} conditions Conditions
    * @param {Object|String} projection  Optional fields to return, see Query.prototype.select()
@@ -83,20 +84,24 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://mongoosejs.com/docs/api.html#model_Model.create}
+   * @see {@link https://mongoosejs.com/docs/api.html#model_Model.create}
    * @param {*} model
    * @param {*} docs
    */
-  static async create(model, docs = {}, options = { defaultDocsFlg: false }) {
+  static async create(model, docs = {}, options = {}) {
+    const _options = {
+      defaultDocsFlg: false,
+      ...options
+    }
     const asyncData = model.create(docs)
-    if (defaultDocsFlg) {
+    if (_options.defaultDocsFlg) {
       return this.execDefaultResponse(model, asyncData, METHOD.CREATE)
     }
     return this.execResponse(model, asyncData, METHOD.CREATE)
   }
 
   /**
-   * @see {@href https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate}
+   * @see {@link https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate}
    * @param {*} model
    * @param {*} conditions
    * @param {*} update
@@ -115,7 +120,7 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete}
+   * @see {@link https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete}
    * @param {*} model
    * @param {*} conditions
    * @param {*} options
@@ -129,7 +134,7 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://mongoosejs.com/docs/api/query.html#query_Query-deleteMany}
+   * @see {@link https://mongoosejs.com/docs/api/query.html#query_Query-deleteMany}
    * @param {*} model
    * @param {*} conditions filter
    * @param {*} options
@@ -178,7 +183,7 @@ class ModelHeplers {
   }
 
   /**
-   * @see {@href https://stackoverflow.com/questions/43331706/how-to-get-collection-name-from-a-mongoose-model-object?answertab=active#tab-top}
+   * @see {@link https://stackoverflow.com/questions/43331706/how-to-get-collection-name-from-a-mongoose-model-object?answertab=active#tab-top}
    * @param {*} model
    */
   static getModelName(model) {
