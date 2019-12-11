@@ -1,12 +1,9 @@
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
-import { UserInputError, ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server';
+import { UserInputError, ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server'
 import jwt from 'jsonwebtoken'
 class auth {
-  static getTokens(model, args, { projection, SECRET } = {}, options = {}) {
-    // return modelHeplers
-  }
-  static async login(model, args, { projection, SECRET, req, isAdminSite = false } = {}, options = {}) {
+  static async login(model, args, { projection, SECRET, req, isAdmin = false } = {}, options = {}) {
     const { username, password, rememberMe } = args
     Object.assign(options, {
       defaultDocsFlg: true
@@ -16,7 +13,7 @@ class auth {
       new ApolloError('user is not correct')
     }
     if (rememberMe) {
-      req.session.user = user;
+      req.session.user = user
     }
     const token = this.getToken(user, SECRET)
     return {
@@ -24,14 +21,25 @@ class auth {
       token
     }
   }
-  static checkAuth({ token, isAdminSite = false }, req) {
-    // const res = await this.checkAuth({ isAdminSite }, req);
+
+  static checkAuth({ token, isAdminSite = false, SECRET }, req) {
+    if (req.session && req.session.user) {
+      return req.session.user
+    } else if (token) {
+      return parseToken(token, SECRET)
+    }
   }
+
+  static parseToken(token, secret) {
+    var decoded = jwt.verify(token, secret)
+    return decoded
+  }
+
   static getToken({ id }, secret) {
     const token = jwt.sign({ userId: id }, secret, {
       expiresIn: 60 * 60 * 24 * 7 * 1000
-    });
-    return token;
+    })
+    return token
   }
 }
 

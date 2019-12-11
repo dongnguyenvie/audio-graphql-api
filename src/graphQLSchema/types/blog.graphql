@@ -1,0 +1,10 @@
+extend type Query {
+  getBlog(role: InputRoleQuery!): RoleResponse
+  getBlogs(filters: InputPagingRequest): RolePaginate
+}
+
+extend type Mutation {
+  createBlog(role: InputCreateRole!): RoleResponse!
+  updateBlog(role: InputUpdateRole!): RoleResponse!
+  deleteBlog(role: InputDeleteRole!): RoleResponse!
+}
