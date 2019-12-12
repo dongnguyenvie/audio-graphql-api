@@ -12,11 +12,19 @@ class blog {
     Object.assign(options, { filters })
     return modelHeplers.findPaging(model, args, projection, options)
   }
-  static async createBlog(model, args) {
-    const { user, jsonLD, status, tags, ..._args } = args
+  static async createBlog(model, args, { models, currentUser } = {}) {
+    // const { jsonLD, status, tags, ...argsPost } = args
+    const blogExits = await modelHeplers.findOne(model, { user: currentUser._id }, null, { defaultDocsFlg: true })
+    if (blogExits) {
+      throw new Error('error')
+    }
+
+    // title content user metaData isDelete
     const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-    const post = modelHeplers.create({ _args, metaData: metaData._id })
-    return post
+
+    return {}
+    const blog = modelHeplers.create({ ...argsPost, metaData: metaData._id })
+    return blog
   }
   static async updateBlog(model, args, { projection } = {}) {
     const { _id, ...update } = helper.mapToIndexDoc(args)

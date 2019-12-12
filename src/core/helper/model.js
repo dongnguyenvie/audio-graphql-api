@@ -72,7 +72,7 @@ class ModelHeplers {
    * @param {Object} conditions Conditions
    * @param {Object|String} projection  Optional fields to return, see Query.prototype.select()
    * @param {Object} options Optional see Query.prototype.setOptions()
-   * @param {Boolean} docsFlg if default reponse then docsFlg = true
+   * @param {Boolean} options.defaultDocsFlg if default reponse then docsFlg = true
    * @returns {Promise} docs
    */
   static async findOne(model, conditions = {}, projection = '', options = {}) {

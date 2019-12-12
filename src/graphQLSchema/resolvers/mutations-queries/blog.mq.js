@@ -22,9 +22,10 @@ export default {
     }
   },
   Mutation: {
-    createBlog: async (_, args, { models }, info) => {
+    createBlog: async (_, args, { models, req }, info) => {
       const conditions = args[FIELD]
-      return ctrs[FIELD].createRole(models[FIELD], conditions)
+      const currentUser = helper.getCurrentUser(req)
+      return ctrs[FIELD].createBlog(models[FIELD], conditions, { models, currentUser })
     },
     updateBlog: async (_, args, { models }, info) => {
       const conditions = args[FIELD]

@@ -4,7 +4,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createBlog(role: InputCreateRole!): RoleResponse!
+  createBlog(role: String!): RoleResponse!
   updateBlog(role: InputUpdateRole!): RoleResponse!
   deleteBlog(role: InputDeleteRole!): RoleResponse!
 }

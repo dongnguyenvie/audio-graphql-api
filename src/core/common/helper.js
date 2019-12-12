@@ -51,14 +51,24 @@ class Helper {
     }, {})
   }
 
-/**
- * @see {@link https://www.npmjs.com/package/bcrypt}
- * 
- * @param {*} plaintextPassword 
- * @param {*} hashedPassword
- */
+  /**
+   * @see {@link https://www.npmjs.com/package/bcrypt}
+   * 
+   * @param {*} plaintextPassword 
+   * @param {*} hashedPassword
+   */
   static comparePassword(plaintextPassword, hashedPassword) {
     return bcrypt.compareSync(plaintextPassword, hashedPassword)
+  }
+
+  /**
+   * @param {*} req 
+   */
+  static getCurrentUser(req) {
+    if (!req.session.user) {
+      throw new Error('getCurrentUser error')
+    }
+    return req.session.user
   }
 }
 export default Helper
