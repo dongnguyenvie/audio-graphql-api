@@ -5,13 +5,18 @@ import bcrypt from 'bcrypt'
 import _ from 'lodash'
 
 class user {
-  static async getUser(model, args, { projection } = {}, options = {}) {
+  static async getUser(model, args, { projection, populateSchema } = {}, options = {}) {
     const { _id } = helper.mapToIndexDoc(args)
-    return modelHeplers.findOne(model, { _id }, projection)
+    return modelHeplers.findOne(model, { _id }, populateSchema, {})
   }
 
-  static async createUser(model, args, { projection } = {}, options = {}) {
-    return modelHeplers.create(model, args)
+  static async getUsers(model, args, { filters, populateSchema } = {}, options = {}) {
+    Object.assign(options, { filters })
+    return modelHeplers.findPaging(model, args, populateSchema, options)
+  }
+
+  static async createUser(model, args, { populateSchema } = {}, options = {}) {
+    return modelHeplers.create(model, args, populateSchema)
   }
 
   static async updateUser(model, args) {
@@ -40,7 +45,7 @@ class user {
     }
     const newUser = await modelHeplers.update(model, { _id }, { password: newPass })
     if (newUser.success) {
-      req.session.user = newUser.result;
+      req.session.user = newUser.result
     }
     return newUser
   }

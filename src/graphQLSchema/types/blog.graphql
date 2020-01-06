@@ -1,10 +1,33 @@
+type Blog {
+  title: String!
+  content: String
+  user: ID
+  metaData: ID
+  isDelete: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input InputCreateBlog {
+  title: String!
+  content: String
+  user: ID
+  metaData: ID
+}
+
+type createBlogReponse {
+  success: Boolean!
+  message: String
+  result: [Blog]
+}
+
 extend type Query {
   getBlog(role: InputRoleQuery!): RoleResponse
   getBlogs(filters: InputPagingRequest): RolePaginate
 }
 
 extend type Mutation {
-  createBlog(role: String!): RoleResponse!
+  createBlog(blog: InputCreateBlog!): createBlogReponse! @auth(role: TEST)
   updateBlog(role: InputUpdateRole!): RoleResponse!
   deleteBlog(role: InputDeleteRole!): RoleResponse!
 }

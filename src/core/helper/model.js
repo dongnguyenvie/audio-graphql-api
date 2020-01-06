@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import logger from '../../utils/logger'
 
 const METHOD = {
@@ -43,11 +44,13 @@ class ModelHeplers {
    * @see {@link https://mongoosejs.com/docs/api/model.html#model_Model.find}
    * @param {*} model
    * @param {*} conditions
-   * @param {*} projection
+   * @param {*} populateSchema
    * @param {*} options
    */
-  static async findAll(model, conditions = {}, projection = '', options = {}) {
-    const asyncData = model.find(conditions, projection, options)
+  static async findAll(model, conditions = {}, populateSchema = {}, options = {}) {
+    const asyncData = model.find(conditions, populateSchema.projection, options)
+    // Map populate from query
+    this.mapPopulates(asyncData, populateSchema)
     return this.execResponse(model, asyncData, METHOD.GET)
   }
 
@@ -57,9 +60,9 @@ class ModelHeplers {
    * @param {*} conditions
    * @param {*} options
    */
-  static async findPaging(model, conditions = {}, projection = '', options = {}) {
+  static async findPaging(model, conditions = {}, populateSchema = {}, options = {}) {
     const { filters, defaultDocsFlg } = { defaultDocsFlg: true, ...options }
-    const asyncData = model.paginate(conditions, filters)
+    const asyncData = await model.paginate(conditions, filters)
     if (defaultDocsFlg) {
       return this.execDefaultResponse(model, asyncData, METHOD.GET)
     }
@@ -70,13 +73,15 @@ class ModelHeplers {
    * @see {@link https://mongoosejs.com/docs/api.html#model_Model.findOne}
    * @param {Schema} model The Schema instance
    * @param {Object} conditions Conditions
-   * @param {Object|String} projection  Optional fields to return, see Query.prototype.select()
+   * @param {Object} populateSchema  Optional fields to return, see Query.prototype.select()
    * @param {Object} options Optional see Query.prototype.setOptions()
    * @param {Boolean} options.defaultDocsFlg if default reponse then docsFlg = true
    * @returns {Promise} docs
    */
-  static async findOne(model, conditions = {}, projection = '', options = {}) {
-    const asyncData = model.findOne(conditions, projection, options)
+  static async findOne(model, conditions = {}, populateSchema, options = {}) {
+    const asyncData = model.findOne(conditions, populateSchema.projection, options)
+    // Map populate from query
+    this.mapPopulates(asyncData, populateSchema)
     if (options.defaultDocsFlg) {
       return this.execDefaultResponse(model, asyncData, METHOD.CREATE)
     }
@@ -88,12 +93,15 @@ class ModelHeplers {
    * @param {*} model
    * @param {*} docs
    */
-  static async create(model, docs = {}, options = {}) {
+  static async create(model, docs = {}, populateSchema, options = {}) {
     const _options = {
       defaultDocsFlg: false,
       ...options
     }
-    const asyncData = model.create(docs)
+    let asyncData = new model(docs)
+    // Map populate from query
+    this.mapPopulates(asyncData, populateSchema, null, true)
+    asyncData = asyncData.save()
     if (_options.defaultDocsFlg) {
       return this.execDefaultResponse(model, asyncData, METHOD.CREATE)
     }
@@ -180,6 +188,27 @@ class ModelHeplers {
    */
   static async recover(model, conditions = {}, options = {}) {
     return this.update(model, conditions, { isDelete: false }, options)
+  }
+
+  /**
+   *
+   * @param {*} asyncData
+   * @param {*} schema
+   * @param {*} fieldNm
+   */
+  static mapPopulates(asyncData, schema, fieldNm, execPopulateFlg = false) {
+    // FieldNm exists, we must create populate for it
+    if (fieldNm) {
+      asyncData.populate(fieldNm, schema.projection || '')
+      if (execPopulateFlg) {
+        asyncData.execPopulate()
+      }
+    }
+    Object.keys(schema).forEach(_key => {
+      if (_.isObject(schema[_key])) {
+        this.mapPopulates(asyncData, schema[_key], _key, execPopulateFlg)
+      }
+    })
   }
 
   /**

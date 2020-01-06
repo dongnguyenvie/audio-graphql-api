@@ -5,17 +5,18 @@ import jwt from 'jsonwebtoken'
 class auth {
   static async login(model, args, { projection, SECRET, req, isAdmin = false } = {}, options = {}) {
     const { username, password, rememberMe } = args
-    Object.assign(options, {
-      defaultDocsFlg: true
-    })
-    const user = await modelHeplers.findOne(model, { username }, '', options)
+    const user = await modelHeplers.findOne(model, { username }, '', { ...options, defaultDocsFlg: true })
+    // asyncData.populate('roles')
     if (user && helper.comparePassword(password, user.password)) {
       new ApolloError('user is not correct')
     }
+
     if (rememberMe) {
       req.session.user = user
     }
-    const token = this.getToken(user, SECRET)
+
+    const token = helper.createToken(user, SECRET)
+    console.log(token)
     return {
       user,
       token

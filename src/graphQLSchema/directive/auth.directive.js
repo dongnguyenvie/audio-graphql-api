@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import { SchemaDirectiveVisitor } from 'apollo-server'
 import { defaultFieldResolver } from 'graphql'
 import { AuthenticationError } from 'apollo-server'
+import helper from '../../core/common/helper'
 
 const getUser = async req => {
   const token = req.headers['token']
@@ -21,14 +22,14 @@ const getUser = async req => {
 const auth = class AuthDirective extends SchemaDirectiveVisitor {
   visitObject(type) {
     this.ensureFieldsWrapped(type)
-    type._requiredAuthRole = this.args.requires
+    type._requiredAuthRole = this.args.role
   }
   // Visitor methods for nested types like fields and arguments
   // also receive a details object that provides information about
   // the parent and grandparent types.
   visitFieldDefinition(field, details) {
     this.ensureFieldsWrapped(details.objectType)
-    field._requiredAuthRole = this.args.requires
+    field._requiredAuthRole = this.args.role
   }
 
   ensureFieldsWrapped(objectType) {
@@ -50,14 +51,13 @@ const auth = class AuthDirective extends SchemaDirectiveVisitor {
         }
 
         const [, , ctx, info] = args
-        const me = await getUser(ctx.req)
-        // if (!user.hasRole(requiredRole)) {
-        //     throw new Error("not authorized");
-        // }
-        if (!me) {
+        const user = helper.getAuth(ctx.req, ctx.SECRET)
+        if (!user) {
           throw new AuthenticationError('You are not authenticated')
         }
-        args[2].me = me
+        if (user._role !== requiredRole) {
+          throw new Error('not authorized')
+        }
         return resolve.apply(this, args)
       }
     })

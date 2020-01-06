@@ -6,8 +6,8 @@ const FIELD = 'role'
  */
 export default {
   Role: {
-    id: async (docs, args) => {
-      return docs._id
-    }
+    // id: async (docs, args) => {
+    //   return docs._id
+    // }
   }
 }

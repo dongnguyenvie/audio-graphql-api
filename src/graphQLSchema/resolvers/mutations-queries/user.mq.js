@@ -7,32 +7,33 @@ const FIELD = 'user'
 export default {
   Query: {
     getUser: async (_, args, { models }, info) => {
-      const projection = helper.getProjection(info)
-      const conditions = args[FIELD];
-      return ctrs[FIELD].getUser(models[FIELD], conditions, { projection })
+      const populateSchema = helper.getPopulateSchema(info)
+      const conditions = args[FIELD]
+      return ctrs[FIELD].getUser(models[FIELD], conditions, { populateSchema })
     },
     getUsers: async (_, args, { models }, info) => {
-      const projection = helper.getProjection(info, 'docs')
+      const populateSchema = helper.getPopulateSchema(info, 'docs')
       const _args = args[constants.INPUT_FILTERS_KEY]
       const { query: conditions = {}, ...filters } = _args
-      return ctrs[FIELD].getRoles(models[FIELD], conditions, { projection, filters })
+      return ctrs[FIELD].getUsers(models[FIELD], conditions, { populateSchema, filters })
     }
   },
   Mutation: {
     createUser: async (_, args, { models }, info) => {
-      const conditions = args[FIELD];
-      return ctrs[FIELD].createUser(models[FIELD], conditions)
+      const conditions = args[FIELD]
+      const populateSchema = helper.getPopulateSchema(info)
+      return ctrs[FIELD].createUser(models[FIELD], conditions, { populateSchema })
     },
     updateUser: async (_, args, { models }, info) => {
-      const conditions = args[FIELD];
+      const conditions = args[FIELD]
       return ctrs[FIELD].updateUser(models[FIELD], conditions)
     },
     deleteUser: async (_, args, { models }, info) => {
-      const conditions = args[FIELD];
+      const conditions = args[FIELD]
       return ctrs[FIELD].deleteUser(models[FIELD], conditions)
     },
     changePassword: async (_, args, { models, req }, info) => {
-      const conditions = args[FIELD];
+      const conditions = args[FIELD]
       return ctrs[FIELD].changePassword(models[FIELD], conditions, { req })
     }
   }

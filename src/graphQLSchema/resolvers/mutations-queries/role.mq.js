@@ -11,20 +11,21 @@ const FIELD = 'role'
 export default {
   Query: {
     getRole: async (_, args, { models, me }, info) => {
-      const projection = helper.getProjection(info)
-      return ctrs[FIELD].getRole(models[FIELD], args[FIELD], { projection })
+      const populateSchema = helper.getPopulateSchema(info)
+      return ctrs[FIELD].getRole(models[FIELD], args[FIELD], { populateSchema })
     },
     getRoles: async (_, args, { models, me }, info) => {
-      const projection = helper.getProjection(info, 'docs')
+      const populateSchema = helper.getPopulateSchema(info, 'docs')
       const _args = args[constants.INPUT_FILTERS_KEY]
       const { query: conditions = {}, ...filters } = _args
-      return ctrs[FIELD].getRoles(models[FIELD], conditions, { projection, filters })
+      return ctrs[FIELD].getRoles(models[FIELD], conditions, { populateSchema, filters })
     }
   },
   Mutation: {
     createRole: async (_, args, { models }, info) => {
+      const populateSchema = helper.getPopulateSchema(info)
       const conditions = args[FIELD]
-      return ctrs[FIELD].createRole(models[FIELD], conditions)
+      return ctrs[FIELD].createRole(models[FIELD], conditions, { populateSchema })
     },
     updateRole: async (_, args, { models }, info) => {
       const conditions = args[FIELD]
