@@ -15,13 +15,13 @@ class blog {
   }
 
   static async createBlog(model, args, { models, user, populateSchema } = {}) {
-    const blogExits = await modelHeplers.findOne(model, { user: user._id }, populateSchema, { defaultDocsFlg: true })
+    const blogExits = await modelHeplers.findOne(model, { user: user.id }, populateSchema, { defaultDocsFlg: true })
     if (blogExits) {
       throw new Error('Blog already exists')
     }
     const { jsonLD, status, tags, ...argsPost } = args
     // const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-    return modelHeplers.create(model, { ...argsPost, user: user._id }, populateSchema)
+    return modelHeplers.create(model, { ...argsPost, user: user.id }, populateSchema)
   }
 
   static async updateBlog(model, args, { populateSchema } = {}) {

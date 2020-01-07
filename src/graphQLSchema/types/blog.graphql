@@ -27,7 +27,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createBlog(blog: InputCreateBlog!): BlogReponse! @auth(role: [USER, ADMIN, REVIEWER])
-  updateBlog(role: InputUpdateRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
-  deleteBlog(role: InputDeleteRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
+  createBlog(blog: InputCreateBlog!): BlogReponse! @auth(role: USER)
+  updateBlog(role: InputUpdateRole!): RoleResponse! @auth(role: USER)
+  deleteBlog(role: InputDeleteRole!): RoleResponse! @auth(role: USER)
 }

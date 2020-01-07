@@ -9,11 +9,12 @@ const blogSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      required: ''
+      default: ''
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
     metaData: {
       type: Schema.Types.ObjectId,

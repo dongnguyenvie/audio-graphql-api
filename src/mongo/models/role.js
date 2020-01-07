@@ -12,7 +12,7 @@ const roleSchema = new mongoose.Schema(
       type: String
     },
     permission: {
-      type: Number
+      type: String
     },
     isDelete: {
       type: Boolean,

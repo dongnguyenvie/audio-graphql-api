@@ -1,13 +1,13 @@
 directive @upper on FIELD_DEFINITION
 directive @me on FIELD_DEFINITION
-directive @auth(role: [enumRole] = [UNKNOWN]) on OBJECT | FIELD_DEFINITION
+directive @auth(role: enumRole = 0) on OBJECT | FIELD_DEFINITION
 directive @validate(schema: String, condition: [JSON]) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 directive @email on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
 enum enumRole {
+  UNKNOWN
+  USER
+  MANAGE
   ADMIN
   REVIEWER
-  USER
-  UNKNOWN
-  TEST
 }

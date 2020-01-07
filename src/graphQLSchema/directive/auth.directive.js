@@ -46,20 +46,18 @@ const auth = class AuthDirective extends SchemaDirectiveVisitor {
       field.resolve = async function (...args) {
         // Get the required Role from the field first, falling back
         // to the objectType if no Role is required by the field:
-        const requiredRole = field._requiredAuthRole || objectType._requiredAuthRole || []
+        const requiredRole = field._requiredAuthRole || objectType._requiredAuthRole
         if (!requiredRole) {
           return resolve.apply(this, args)
         }
 
         const [, , ctx, info] = args
-        const user = helper.getAuth(ctx.req, ctx.SECRET)
+        const user = helper.getAuth(ctx.req, ctx.SECRET, ctx.req.session)
         if (!user) {
           throw new AuthenticationError('You are not authenticated')
         }
-        // Set current user
-        ctx.req.session.user = user
-        console.log(`requiredRole`, requiredRole)
-        if (_.includes(requiredRole, user._role)) {
+
+        if (!_.includes(user.roles, requiredRole)) {
           throw new Error('not authorized')
         }
         return resolve.apply(this, args)

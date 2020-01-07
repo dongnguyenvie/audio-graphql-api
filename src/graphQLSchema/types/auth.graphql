@@ -1,14 +1,14 @@
 input InputLoginQuery {
-    username: String!
-    password: String!
-    rememberMe: Boolean!
+  username: String!
+  password: String!
+  rememberMe: Boolean!
 }
 
 type LoginReponse {
-    success: Boolean
-    user: User
-    token: String
-    role: [Role]
+  success: Boolean
+  user: User
+  token: String
+  role: [Role]
 }
 
 extend type Query {

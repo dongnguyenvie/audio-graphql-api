@@ -2,7 +2,7 @@ type Role {
   id: ID
   name: String!
   description: String
-  permission: Int!
+  permission: String!
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -10,7 +10,7 @@ type Role {
 input InputCreateRole {
   name: String!
   description: String!
-  permission: Int!
+  permission: String!
 }
 
 input InputRoleQuery {
@@ -21,7 +21,7 @@ input InputUpdateRole {
   id: ID!
   name: String
   description: String
-  permission: Int
+  permission: String
 }
 
 input InputDeleteRole {
@@ -29,18 +29,18 @@ input InputDeleteRole {
 }
 
 type RolePaginate {
-    docs: [Role]
-    totalDocs: Int
-    limit: Int
-    hasPrevPage: Boolean
-    hasNextPage: Boolean
-    page: Int
-    totalPages: Int
-    offset: Int
-    prevPage: Int
-    nextPage: Int
-    pagingCounter: Int
-    meta: JSON
+  docs: [Role]
+  totalDocs: Int
+  limit: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  page: Int
+  totalPages: Int
+  offset: Int
+  prevPage: Int
+  nextPage: Int
+  pagingCounter: Int
+  meta: JSON
 }
 
 type RoleResponse {
@@ -61,7 +61,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createRole(role: InputCreateRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
-  updateRole(role: InputUpdateRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
-  deleteRole(role: InputDeleteRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
+  createRole(role: InputCreateRole!): RoleResponse!
+  updateRole(role: InputUpdateRole!): RoleResponse! @auth(role: ADMIN)
+  deleteRole(role: InputDeleteRole!): RoleResponse! @auth(role: ADMIN)
 }

@@ -65,7 +65,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createPost(post: InputCreatePost!): PostReponse! @auth(role: [USER, ADMIN, REVIEWER])
-  updatePost(post: InputUpdatePost!): PostReponse! @auth(role: [USER, ADMIN, REVIEWER])
-  deletePost(post: InputRemovePost!): PostReponse! @auth(role: [USER, ADMIN, REVIEWER])
+  createPost(post: InputCreatePost!): PostReponse! @auth(role: USER)
+  updatePost(post: InputUpdatePost!): PostReponse! @auth(role: USER)
+  deletePost(post: InputRemovePost!): PostReponse! @auth(role: USER)
 }

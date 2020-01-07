@@ -4,6 +4,11 @@ import config from '../../../config'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
+const mapFieldNmToTableNm = {
+  role: 'roles',
+  user: 'users',
+}
+
 class Helper {
   static rename(oldProp, newProp, { [oldProp]: old, ...others }) {
     return {
@@ -22,25 +27,21 @@ class Helper {
    * @param {*} info
    * @param {*} rootField
    */
-  static getProjection(info, rootField = 'result') {
+  static getPopulateSchema(info, rootField = 'result') {
     const schema = this.getSchema(_.get(graphqlFields(info), rootField))
-
-    // let projection = Object.keys(rootField ? _.get(graphqlFields(info), rootField) : graphqlFields(info))
-
-    // if (_.isArray(projection) && !_.isEmpty(projection)) {
-    //   projection = projection.join(' ')
-    // } else {
-    //   projection = ''
-    // }
-
     return schema
   }
 
-  static getPopulateSchema(info, rootField = 'result') {
-    const schema = this.getSchema(_.get(graphqlFields(info), rootField))
-    return schema;
+  /**
+   *
+   * @param {*} user
+   */
+  static mapUserSession(user) {
+    const { roles, id, username, fullName, avatar, email, phone } = user
+    const _user = { id, username, fullName, avatar, email, phone }
+    _user.roles = roles.map(role => role.permission)
+    return _user
   }
-
 
   static getSchema(query) {
     let schema = {}
@@ -54,31 +55,6 @@ class Helper {
     })
     schema.projection = projection.join(' ')
     return schema
-  }
-
-  static testABC(info, rootField = 'result') {
-    const a = this.getSchema(_.get(graphqlFields(info)))
-    console.log(a)
-    const requestSchema = _.get(graphqlFields(info), rootField)
-    let querySchema = {}
-    let projection1 = {}
-    Object.keys(requestSchema).forEach(key => {
-      if (_.isEmpty(requestSchema[key])) {
-        projection1[key] = requestSchema[key]
-      } else {
-        querySchema[key] = requestSchema[key]
-      }
-    })
-    querySchema['projection'] = requestSchema[key]
-    let projection = Object.keys(rootField ? _.get(graphqlFields(info), rootField) : graphqlFields(info))
-
-    if (_.isArray(projection) && !_.isEmpty(projection)) {
-      projection = projection.join(' ')
-    } else {
-      projection = ''
-    }
-
-    return projection
   }
 
   /**
@@ -105,7 +81,6 @@ class Helper {
       acc[populateNm] = getPopulate(field, populateNm)
       return acc
     }, {})
-    console.log(populate)
     return populate
   }
 
@@ -135,8 +110,8 @@ class Helper {
    * @param {*} secret
    */
   static createToken(payload, secret) {
-    const { email, fullName, id, phone, username, role } = payload
-    const token = jwt.sign({ email, fullName, id, phone, username }, secret, {
+    const { email, fullName, id, phone, username, avatar, roles } = payload
+    const token = jwt.sign({ email, fullName, id, phone, username, avatar, roles }, secret, {
       expiresIn: 60 * 60 * 24 * 7 * 1000
     })
     return token
@@ -162,11 +137,16 @@ class Helper {
    * @param {*} param0
    * @param {*} req
    */
-  static getAuth(req = {}, secret) {
+  static getAuth(req = {}, secret, session) {
     if (req.session && req.session.user) {
       return req.session.user
     } else if (req.headers && req.headers['token']) {
-      return this.parseToken(req.headers['token'], secret)
+      const _user = this.parseToken(req.headers['token'], secret)
+      if (_user) {
+        session.user = _user
+        return _user
+      }
+      return false
     }
   }
 }
