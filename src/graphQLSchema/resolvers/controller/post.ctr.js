@@ -3,7 +3,7 @@ import helper from '../../../core/common/helper'
 import ctrs from '.'
 import _ from 'lodash'
 
-class role {
+class post {
   static async getPost(model, args, { projection } = {}, options = {}) {
     const { _id } = helper.mapToIndexDoc(args)
     return modelHeplers.findOne(model, { _id }, projection)
@@ -12,10 +12,11 @@ class role {
     Object.assign(options, { filters })
     return modelHeplers.findPaging(model, args, projection, options)
   }
-  static async createPost(model, args) {
-    const { user, jsonLD, status, tags, ..._args } = args
-    const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-    const post = modelHeplers.create({ _args, metaData: metaData._id })
+  static async createPost(model, args, { populateSchema, user }) {
+    const { jsonLD, status, tags, ..._args } = args
+    // const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
+    const post = modelHeplers.create(model, { ..._args, metaData: "5e1439fa94b2a5047f29d5f4", user: user.id }, populateSchema)
+    console.log(`post`, await post)
     return post
   }
   static async updatePost(model, args, { projection } = {}) {
@@ -28,4 +29,4 @@ class role {
   }
 }
 
-export default { role }
+export default { post }

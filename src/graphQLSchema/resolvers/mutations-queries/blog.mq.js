@@ -11,21 +11,22 @@ const FIELD = 'blog'
 export default {
   Query: {
     getBlog: async (_, args, { models, me }, info) => {
-      const projection = helper.getProjection(info)
-      return ctrs[FIELD].getRole(models[FIELD], args[FIELD], { projection })
+      const populateSchema = helper.getPopulateSchema(info)
+      return ctrs[FIELD].getRole(models[FIELD], args[FIELD], { populateSchema })
     },
     getBlogs: async (_, args, { models, me }, info) => {
-      const projection = helper.getProjection(info, 'docs')
+      const populateSchema = helper.getPopulateSchema(info, 'docs')
       const _args = args[constants.INPUT_FILTERS_KEY]
       const { query: conditions = {}, ...filters } = _args
-      return ctrs[FIELD].getRoles(models[FIELD], conditions, { projection, filters })
+      return ctrs[FIELD].getRoles(models[FIELD], conditions, { populateSchema, filters })
     }
   },
   Mutation: {
     createBlog: async (_, args, { models, req }, info) => {
+      const populateSchema = helper.getPopulateSchema(info)
       const conditions = args[FIELD]
-      const currentUser = helper.getCurrentUser(req)
-      return ctrs[FIELD].createBlog(models[FIELD], conditions, { models, currentUser })
+      const user = helper.getCurrentUser(req)
+      return ctrs[FIELD].createBlog(models[FIELD], conditions, { models, user, populateSchema })
     },
     updateBlog: async (_, args, { models }, info) => {
       const conditions = args[FIELD]

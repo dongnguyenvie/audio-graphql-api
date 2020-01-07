@@ -11,28 +11,30 @@ const FIELD = 'post'
 export default {
   Query: {
     getPost: async (_, args, { models, me }, info) => {
-      const projection = helper.getProjection(info)
-      return ctrs[FIELD].getRole(models[FIELD], args[FIELD], { projection })
+      const populateSchema = helper.getPopulateSchema(info)
+      return ctrs[FIELD].getPost(models[FIELD], args[FIELD], { populateSchema })
     },
     getPosts: async (_, args, { models, me }, info) => {
-      const projection = helper.getProjection(info, 'docs')
+      const populateSchema = helper.getPopulateSchema(info, 'docs')
       const _args = args[constants.INPUT_FILTERS_KEY]
       const { query: conditions = {}, ...filters } = _args
-      return ctrs[FIELD].getRoles(models[FIELD], conditions, { projection, filters })
+      return ctrs[FIELD].getPosts(models[FIELD], conditions, { populateSchema, filters })
     }
   },
   Mutation: {
-    createPost: async (_, args, { models }, info) => {
+    createPost: async (_, args, { models, req }, info) => {
+      const populateSchema = helper.getPopulateSchema(info)
       const conditions = args[FIELD]
-      return ctrs[FIELD].createRole(models[FIELD], conditions)
+      const user = helper.getCurrentUser(req)
+      return ctrs[FIELD].createPost(models[FIELD], conditions, { populateSchema, user })
     },
     updatePost: async (_, args, { models }, info) => {
       const conditions = args[FIELD]
-      return ctrs[FIELD].updateRole(models[FIELD], conditions)
+      return ctrs[FIELD].updatePost(models[FIELD], conditions)
     },
     deletePost: async (_, args, { models }, info) => {
       const conditions = args[FIELD]
-      return ctrs[FIELD].deleteRole(models[FIELD], conditions)
+      return ctrs[FIELD].deletePost(models[FIELD], conditions)
     }
   }
 }

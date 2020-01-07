@@ -8,29 +8,28 @@ class blog {
     const { _id } = helper.mapToIndexDoc(args)
     return modelHeplers.findOne(model, { _id }, projection)
   }
-  static async getBlogs(model, args, { projection, filters } = {}, options = {}) {
+
+  static async getBlogs(model, args, { populateSchema, filters } = {}, options = {}) {
     Object.assign(options, { filters })
-    return modelHeplers.findPaging(model, args, projection, options)
+    return modelHeplers.findPaging(model, args, populateSchema, options)
   }
-  static async createBlog(model, args, { models, currentUser } = {}) {
-    // const { jsonLD, status, tags, ...argsPost } = args
-    const blogExits = await modelHeplers.findOne(model, { user: currentUser._id }, null, { defaultDocsFlg: true })
+
+  static async createBlog(model, args, { models, user, populateSchema } = {}) {
+    const blogExits = await modelHeplers.findOne(model, { user: user._id }, populateSchema, { defaultDocsFlg: true })
     if (blogExits) {
-      throw new Error('error')
+      throw new Error('Blog already exists')
     }
-
-    // title content user metaData isDelete
-    const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-
-    return {}
-    const blog = modelHeplers.create({ ...argsPost, metaData: metaData._id })
-    return blog
+    const { jsonLD, status, tags, ...argsPost } = args
+    // const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
+    return modelHeplers.create(model, { ...argsPost, user: user._id }, populateSchema)
   }
-  static async updateBlog(model, args, { projection } = {}) {
+
+  static async updateBlog(model, args, { populateSchema } = {}) {
     const { _id, ...update } = helper.mapToIndexDoc(args)
     return modelHeplers.update(model, { _id }, update)
   }
-  static async deleteBlog(model, args, { projection } = {}) {
+
+  static async deleteBlog(model, args, { populateSchema } = {}) {
     const { _id } = helper.mapToIndexDoc(args)
     return modelHeplers.delete(model, { _id })
   }

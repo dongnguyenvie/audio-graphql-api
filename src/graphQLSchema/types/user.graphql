@@ -84,8 +84,8 @@ extend type Query {
 }
 
 extend type Mutation {
-  createUser(user: InputCreateUser): UserResponse!
-  updateUser(user: InputUpdateUser!): UserResponse!
-  deleteUser(user: InputRemoveUser): UserResponse
-  changePassword(user: InputChangePassword): UserResponse!
+  createUser(user: InputCreateUser): UserResponse! @auth(role: [USER, ADMIN, REVIEWER])
+  updateUser(user: InputUpdateUser!): UserResponse! @auth(role: [USER, ADMIN, REVIEWER])
+  deleteUser(user: InputRemoveUser): UserResponse! @auth(role: [USER, ADMIN, REVIEWER])
+  changePassword(user: InputChangePassword): UserResponse! @auth(role: [USER, ADMIN, REVIEWER])
 }

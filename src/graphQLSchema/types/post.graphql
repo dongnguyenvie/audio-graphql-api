@@ -2,7 +2,6 @@ input InputCreatePost {
   title: String
   content: String
   blog: ID
-  user: ID
   categories: [ID]
   jsonLD: JSON
   status: Boolean
@@ -31,7 +30,7 @@ input InputRemovePost {
 type Post {
   title: String
   content: String
-  blog: ID
+  blog: Blog
   user: ID
   metaData: ID
   categories: [ID]
@@ -57,7 +56,7 @@ type PostPaginate {
 type PostReponse {
   success: Boolean!
   message: String
-  result: [Post]
+  result: Post
 }
 
 extend type Query {
@@ -66,7 +65,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createPost(user: InputCreatePost!): PostReponse!
-  updatePost(user: InputUpdatePost!): PostReponse!
-  deletePost(user: InputRemovePost!): PostReponse!
+  createPost(post: InputCreatePost!): PostReponse! @auth(role: [USER, ADMIN, REVIEWER])
+  updatePost(post: InputUpdatePost!): PostReponse! @auth(role: [USER, ADMIN, REVIEWER])
+  deletePost(post: InputRemovePost!): PostReponse! @auth(role: [USER, ADMIN, REVIEWER])
 }

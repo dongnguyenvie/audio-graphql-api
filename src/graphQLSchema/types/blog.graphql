@@ -1,7 +1,8 @@
 type Blog {
+  id: ID!
   title: String!
   content: String
-  user: ID
+  user: User
   metaData: ID
   isDelete: Boolean
   createdAt: DateTime
@@ -11,14 +12,13 @@ type Blog {
 input InputCreateBlog {
   title: String!
   content: String
-  user: ID
   metaData: ID
 }
 
-type createBlogReponse {
+type BlogReponse {
   success: Boolean!
   message: String
-  result: [Blog]
+  result: Blog
 }
 
 extend type Query {
@@ -27,7 +27,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createBlog(blog: InputCreateBlog!): createBlogReponse! @auth(role: TEST)
-  updateBlog(role: InputUpdateRole!): RoleResponse!
-  deleteBlog(role: InputDeleteRole!): RoleResponse!
+  createBlog(blog: InputCreateBlog!): BlogReponse! @auth(role: [USER, ADMIN, REVIEWER])
+  updateBlog(role: InputUpdateRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
+  deleteBlog(role: InputDeleteRole!): RoleResponse! @auth(role: [USER, ADMIN, REVIEWER])
 }

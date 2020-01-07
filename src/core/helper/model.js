@@ -204,9 +204,9 @@ class ModelHeplers {
         asyncData.execPopulate()
       }
     }
-    Object.keys(schema).forEach(_key => {
-      if (_.isObject(schema[_key])) {
-        this.mapPopulates(asyncData, schema[_key], _key, execPopulateFlg)
+    Object.keys(schema).forEach(_fieldNm => {
+      if (_.isObject(schema[_fieldNm])) {
+        this.mapPopulates(asyncData, schema[_fieldNm], _fieldNm, execPopulateFlg)
       }
     })
   }
