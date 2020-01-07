@@ -5,7 +5,7 @@ input InputRemoveUser {
 input InputCreateUser {
   username: String!
   fullName: String!
-  avatar: String!
+  avatar: String
   email: String!
   phone: String
   password: String!

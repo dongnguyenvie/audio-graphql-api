@@ -31,7 +31,7 @@ type Post {
   title: String
   content: String
   blog: Blog
-  user: ID
+  user: User
   metaData: ID
   categories: [ID]
   createdAt: DateTime

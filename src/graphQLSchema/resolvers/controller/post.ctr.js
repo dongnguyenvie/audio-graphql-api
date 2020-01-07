@@ -15,9 +15,7 @@ class post {
   static async createPost(model, args, { populateSchema, user }) {
     const { jsonLD, status, tags, ..._args } = args
     // const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-    const post = modelHeplers.create(model, { ..._args, metaData: "5e1439fa94b2a5047f29d5f4", user: user.id }, populateSchema)
-    console.log(`post`, await post)
-    return post
+    return modelHeplers.create(model, { ..._args, metaData: "5e1439fa94b2a5047f29d5f4", user: user.id }, populateSchema)
   }
   static async updatePost(model, args, { projection } = {}) {
     const { _id, ...update } = helper.mapToIndexDoc(args)
