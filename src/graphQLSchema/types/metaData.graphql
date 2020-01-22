@@ -1,0 +1,35 @@
+input InputRemoveMetaData {
+  id: String!
+}
+
+input InputCreateMetaData {
+  jsonLd: String
+  slug: String!
+  view: Float
+  order: Float
+  status: Boolean
+  tags: [String]
+}
+
+input InputMetaDataQuery {
+  id: ID!
+}
+
+type MetaData {
+  jsonLd: String
+  slug: String!
+  view: Float
+  order: Float
+  status: Boolean
+  like: Float
+  tags: [String]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type MetaDataResponse {
+  success: Boolean!
+  message: String
+  result: MetaData
+}
+

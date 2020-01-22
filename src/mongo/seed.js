@@ -12,8 +12,10 @@ export default class DatabaseSeeder extends Seeder {
     this.run();
   }
   async run() {
+    let count = 0;
     const seedWoker = setInterval(async () => {
       console.log('>>> Stared worker')
+      count ++;
       if (mongo.models.user.find) {
         clearInterval(seedWoker) // End worker
         await (new RoleSeeder(mongo.models, 'RoleSeeder')).run()
@@ -21,6 +23,10 @@ export default class DatabaseSeeder extends Seeder {
         await (new BlogSeeder(mongo.models, 'BlogSeeder')).run()
         await (new PostSeeder(mongo.models, 'PostSeeder')).run()
         console.log('>>> Finished worker')
+      }
+      if (count > 10) {
+        clearInterval(seedWoker) // End worker
+        console.log('>>> end worker:: erorrs')
       }
     }, 1000)
   }
