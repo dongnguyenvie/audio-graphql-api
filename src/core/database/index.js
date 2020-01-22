@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import config from '../../../config'
-import initSeedData from '../../mongo/seed'
+import DatabaseSeeder from '../../mongo/seed'
 
 mongoose
   .connect(config.MONGO_URL || 'mongodb://localhost:27017/graphql', {
@@ -10,7 +10,7 @@ mongoose
     useFindAndModify: false
   })
   .then(async response => {
-    await initSeedData()
+    new DatabaseSeeder()
     console.log(`db connected success`)
   })
   .catch(err => {

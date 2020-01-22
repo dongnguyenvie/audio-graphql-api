@@ -1,167 +1,110 @@
 import { ApolloError } from 'apollo-server'
-// import bcrypt from 'bcryptjs'
-
-// import { allResolvers } from '../graphql/common/schema';
 import * as mongo from '../mongo'
-// import constant from '../mongodb/common/constant';
-
-// const {
-//     ROLE,
-//     AUTH,
-//     PERMISSION,
-//     FEE_TYPE,
-//     FEE_VALUE_TYPE,
-//     MONEY_CURRENCY
-// } = constant;
-
-async function initData(list, model, field) {
-  const existingDocs = await model.find()
-  const existingDocNames = existingDocs.map(doc => doc[field])
-  const newDocs = list.filter(doc => !existingDocNames.includes(doc[field]))
-  if (newDocs.length) {
-    const docsCreated = await model.insertMany(newDocs)
-
-    if (!docsCreated) {
-      throw new ApolloError('Init data sync failed!', '500')
-    }
-    return roleModel
+import helper from '../core/helper/model'
+import bcrypt from 'bcrypt'
+import Seeder from '../core/modules/seeder'
+/**
+ * @Main
+ */
+export default class DatabaseSeeder extends Seeder {
+  constructor() {
+    super();
+    this.run();
+  }
+  async run() {
+    const seedWoker = setInterval(async () => {
+      console.log('>>> Stared worker')
+      if (mongo.models.user.find) {
+        clearInterval(seedWoker) // End worker
+        await (new RoleSeeder(mongo.models, 'RoleSeeder')).run()
+        await (new UserSeeder(mongo.models, 'UserSeeder')).run()
+        await (new BlogSeeder(mongo.models, 'BlogSeeder')).run()
+        await (new PostSeeder(mongo.models, 'PostSeeder')).run()
+        console.log('>>> Finished worker')
+      }
+    }, 1000)
   }
 }
-const ROLES = [{ permission: 'ADMIN' }, { permission: 'USER' }, { permission: 'MANAGE' }, { permission: 'REVIEWER' }]
-export default async function createSeedData() {
-  const { advise, blog, category, comment, menu, metaData, option, post, role: roleModel, setting, user } = mongo.models
-  const _roles = []
-  ROLES.forEach(role => {
-    _roles.push({ name: role.permission, permission: role.permission })
+
+class RoleSeeder extends Seeder {
+  async run() {
+    const _roles = []
+    const ROLES = [{ permission: 'ADMIN' }, { permission: 'USER' }, { permission: 'MANAGE' }, { permission: 'REVIEWER' }]
+    ROLES.forEach(role => {
+      _roles.push({ name: role.permission, permission: role.permission })
+    })
+    return initData(_roles, this.models.role, 'name')
+  }
+}
+
+class UserSeeder extends Seeder {
+  async run() {
+    const _user = {
+      username: 'dong.nguyen',
+      fullName: 'nguyen quy dong',
+      avatar: 'https://api.adorable.io/avatars/285/abott@adorable.png',
+      email: 'dongnguyenvie@gmail.com',
+      phone: '0347884884',
+      password: '123',
+      roles: []
+    }
+    const adminRole = await helper.findOne(this.models.role, { permission: 'ADMIN' }, { projection: 'id' }, { defaultDocsFlg: true })
+    const adminUser = await helper.findOne(this.models.role, { permission: 'USER' }, { projection: 'id' }, { defaultDocsFlg: true })
+    const adminManage = await helper.findOne(this.models.role, { permission: 'MANAGE' }, { projection: 'id' }, { defaultDocsFlg: true })
+    const _roles = [adminRole, adminUser, adminManage].map(role => role._id)
+    _user.roles = _roles
+    _user.password = bcrypt.hashSync(_user.password, 12)
+    return initData([_user], this.models.user, 'username')
+  }
+}
+class BlogSeeder extends Seeder {
+  async run() {
+    const blogOfDong = {
+      title: "Blog of Dong Nguyen",
+      content: "This is content blog",
+      metaData: "5de746abda0a9b005f69a937", // Hard
+      user: null
+    }
+    const dongUser = await helper.findOne(this.models.user, { username: 'dong.nguyen' }, { projection: 'id' }, { defaultDocsFlg: true })
+    blogOfDong.user = dongUser._id
+    return initData([blogOfDong], this.models.blog, 'title')
+  }
+}
+
+class PostSeeder extends Seeder {
+  async run() {
+    const _posts = []
+    const dongUser = await helper.findOne(this.models.user, { username: 'dong.nguyen' }, { projection: 'id' }, { defaultDocsFlg: true })
+    const dongBlog = await helper.findOne(this.models.blog, { user: dongUser._id }, { projection: 'id' }, { defaultDocsFlg: true })
+    while (_posts.length < 5) {
+      const _index = _posts.length
+      _posts.push({
+        title: `title ${_index}`,
+        content: `content ${_index}`,
+        categories: ["5e1439fa94b2a5047f29d5f4"], // HARD
+        tags: ["tien_hiep"],
+        user: dongUser._id,
+        blog: dongBlog._id
+      })
+    }
+    return initData(_posts, this.models.post)
+  }
+}
+
+function initData(list, model, field) {
+  return new Promise(async (resolve) => {
+    const existingDocs = await model.find()
+    const existingDocNames = existingDocs.map(doc => doc[field])
+    const newDocs = list.filter(doc => !existingDocNames.includes(doc[field]))
+    if (newDocs.length) {
+      const docsCreated = await model.insertMany(newDocs)
+
+      if (!docsCreated) {
+        resolve(true)
+        throw new ApolloError('Init data sync failed!', '500')
+      }
+      resolve(true)
+    }
+    resolve(true)
   })
-  initData(_roles, roleModel, 'name')
-
-  //   // init category
-  //   const listProductCategory = [
-  //     { name: 'Thời trang nam', image: '' },
-  //     { name: 'Điện thoại', image: '' },
-  //     { name: 'Tivi', image: '' },
-  //     { name: 'Laptop', image: '' },
-  //     { name: 'Máy ảnh', image: '' },
-  //     { name: 'Đồng hồ', image: '' },
-  //     { name: 'Ví', image: '' },
-  //     { name: 'Giầy', image: '' },
-  //     { name: 'Thiết bị gia dụng', image: '' },
-  //     { name: 'Giầy dép nữ', image: '' }
-  //   ]
-  //   await initData(listProductCategory, productCategoryModel, 'name')
-
-  //   // init web
-  //   const listWeb = [
-  //     {
-  //       url: 'http://www.gmarket.co.kr',
-  //       description: '',
-  //       image: ''
-  //     },
-  //     {
-  //       url: 'http://www.wemakeprice.com',
-  //       description: '',
-  //       image: ''
-  //     },
-  //     {
-  //       url: 'https://www.chuu.co.kr',
-  //       description: '',
-  //       image: ''
-  //     },
-  //     {
-  //       url: 'https://memebox.com',
-  //       description: '',
-  //       image: ''
-  //     }
-  //   ]
-  //   await initData(listWeb, webModel, 'name')
-
-  //   // init permission
-  //   const listPermission = []
-  //   for (const r in PERMISSION) {
-  //     listPermission.push({ name: PERMISSION[r] })
-  //   }
-  //   await initData(listPermission, permissionModel, 'name')
-
-  //   // init api list
-  //   const defautRole = await roleModel.find({ name: ROLE.Admin }).lean()
-  //   const listApi = Object.keys(allResolvers)
-  //     .map(ctr =>
-  //       Object.keys(allResolvers[ctr]).map(api => ({
-  //         name: api,
-  //         requiredRole: defautRole.map(role => role.id)
-  //       }))
-  //     )
-  //     .flat()
-  //   const allroles = await roleModel.find().lean()
-  //   listApi.map(api => {
-  //     if (['updateUser', 'getCart', 'deleteAllCart'].includes(api.name)) {
-  //       api.requiredRole = allroles.map(role => role.id)
-  //     }
-  //   })
-  //   await initData(listApi, apiModel, 'name')
-  //   // init Admin user
-  //   const adminRoleId = await roleModel.findOne({ name: ROLE.Admin })
-  //   const allPermissions = await permissionModel.find().lean()
-  //   const defaultAdminUser = {
-  //     username: 'admin',
-  //     password: bcrypt.hashSync(AUTH.adminDefaultPass, 10),
-  //     fullName: 'Admin',
-  //     email: 'admin@cyberskill.tech',
-  //     roleId: adminRoleId.id,
-  //     permissionId: allPermissions.map(permission => permission.id),
-  //     phone: '7777777',
-  //     deliveryLocation: 'CyberSkill'
-  //   }
-  //   await initData([defaultAdminUser], userModel, 'username')
-
-  //   //init Fee
-  //   const feeData = [
-  //     {
-  //       feeType: FEE_TYPE.Purchase,
-  //       valueType: FEE_VALUE_TYPE.Percent,
-  //       unit: MONEY_CURRENCY.Korea,
-  //       range: [
-  //         {
-  //           feeValue: 12
-  //         },
-  //         {
-  //           minRange: 500000,
-  //           feeValue: 9
-  //         },
-  //         {
-  //           minRange: 1000000,
-  //           feeValue: 6
-  //         }
-  //       ],
-  //       isWholeSale: true,
-  //       rangeWholeSale: [
-  //         {
-  //           feeValue: 5
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       feeType: FEE_TYPE.ShippingAtPurchasePlaces,
-  //       valueType: FEE_VALUE_TYPE.Value,
-  //       unit: MONEY_CURRENCY.VN,
-  //       range: [
-  //         {
-  //           feeValue: 60000
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       feeType: FEE_TYPE.ShippingAtRecievePlaces,
-  //       valueType: FEE_VALUE_TYPE.Value,
-  //       unit: MONEY_CURRENCY.VN,
-  //       range: [
-  //         {
-  //           minRange: 0.5,
-  //           feeValue: 100000
-  //         }
-  //       ]
-  //     }
-  //   ]
-  //   await initData(feeData, feeModel, 'feeType')
 }
