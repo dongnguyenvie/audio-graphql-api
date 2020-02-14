@@ -12,10 +12,14 @@ class post {
     Object.assign(options, { filters })
     return modelHeplers.findPaging(model, args, projection, options)
   }
-  static async createPost(model, args, { populateSchema, user }) {
+  static async createPost(model, args, { populateSchema, user, models }) {
     const { jsonLD, status, tags, ..._args } = args
-    // const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-    return modelHeplers.create(model, { ..._args, metaData: "5e1439fa94b2a5047f29d5f4", user: user.id }, populateSchema)
+    _args.title = `${args.title}${Math.random()}`
+    const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD: JSON.stringify(jsonLD), status, tags }, {}, { defaultDocsFlg: true })
+    console.log(metaData.jsonLD)
+    const post = modelHeplers.create(model, { ..._args, metaData: metaData.id, user: user.id }, populateSchema)
+    Object.assign(post, { jsonLD: metaData.jsonLD, tags: metaData.tags, status: metaData.status })
+    return post
   }
   static async updatePost(model, args, { projection } = {}) {
     const { _id, ...update } = helper.mapToIndexDoc(args)

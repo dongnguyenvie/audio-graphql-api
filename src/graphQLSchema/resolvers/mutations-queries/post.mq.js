@@ -26,7 +26,7 @@ export default {
       const populateSchema = helper.getPopulateSchema(info)
       const conditions = args[FIELD]
       const user = helper.getCurrentUser(req)
-      return ctrs[FIELD].createPost(models[FIELD], conditions, { populateSchema, user })
+      return ctrs[FIELD].createPost(models[FIELD], conditions, { populateSchema, user, models })
     },
     updatePost: async (_, args, { models }, info) => {
       const conditions = args[FIELD]

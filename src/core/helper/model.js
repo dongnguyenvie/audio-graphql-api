@@ -92,6 +92,8 @@ class ModelHeplers {
    * @see {@link https://mongoosejs.com/docs/api.html#model_Model.create}
    * @param {*} model
    * @param {*} docs
+   * @param {*} populateSchema
+   * @param {*} options
    */
   static async create(model, docs = {}, populateSchema, options = {}) {
     const _options = {

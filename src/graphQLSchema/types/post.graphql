@@ -52,11 +52,23 @@ type PostPaginate {
   pagingCounter: Int
   meta: JSON
 }
-
+type typeCreatePost {
+  title: String
+  content: String
+  blog: Blog
+  user: User
+  metaData: ID
+  categories: [ID]
+  jsonLD: String
+  status: Boolean
+  tags: [String]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
 type PostReponse {
   success: Boolean!
   message: String
-  result: Post
+  result: typeCreatePost
 }
 
 extend type Query {

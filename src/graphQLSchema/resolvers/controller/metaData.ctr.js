@@ -5,7 +5,8 @@ import _ from 'lodash'
 
 class metaData {
   static async createMeta(model, args, { projection } = {}, options = {}) {
-    return modelHeplers.create(model, args, options)
+    console.log(args)
+    return modelHeplers.create(model, args, {}, options)
   }
 }
 
