@@ -3,7 +3,7 @@ import mongoosePaginate from 'mongoose-paginate-v2'
 
 const metaDataSchema = new mongoose.Schema(
   {
-    jsonLd: {
+    jsonLD: {
       type: String
     },
     slug: {

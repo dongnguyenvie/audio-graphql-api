@@ -15,10 +15,10 @@ class post {
   static async createPost(model, args, { populateSchema, user, models }) {
     const { jsonLD, status, tags, ..._args } = args
     _args.title = `${args.title}${Math.random()}`
+    console.log(_args.title);
     const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD: JSON.stringify(jsonLD), status, tags }, {}, { defaultDocsFlg: true })
-    console.log(metaData.jsonLD)
-    const post = modelHeplers.create(model, { ..._args, metaData: metaData.id, user: user.id }, populateSchema)
-    Object.assign(post, { jsonLD: metaData.jsonLD, tags: metaData.tags, status: metaData.status })
+    const post = await modelHeplers.create(model, { ..._args, metaData: metaData.id, user: user.id }, populateSchema)
+    // Object.assign(post.result, { jsonLD: metaData.jsonLD, tags: metaData.tags, status: metaData.status })
     return post
   }
   static async updatePost(model, args, { projection } = {}) {
