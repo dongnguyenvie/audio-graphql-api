@@ -48,9 +48,13 @@ class ModelHeplers {
    * @param {*} options
    */
   static async findAll(model, conditions = {}, populateSchema = {}, options = {}) {
+    const { filters, defaultDocsFlg } = { defaultDocsFlg: true, ...options }
     const asyncData = model.find(conditions, populateSchema.projection, options)
     // Map populate from query
     this.mapPopulates(asyncData, populateSchema)
+    if (defaultDocsFlg) {
+      return this.execDefaultResponse(model, asyncData, METHOD.GET)
+    }
     return this.execResponse(model, asyncData, METHOD.GET)
   }
 

@@ -3,25 +3,28 @@ import * as mongo from '../mongo'
 import helper from '../core/helper/model'
 import bcrypt from 'bcrypt'
 import Seeder from '../core/modules/seeder'
+import elastic from '../core/plugins/elasticsearch'
+import _ from 'lodash'
 /**
  * @Main
  */
 export default class DatabaseSeeder extends Seeder {
   constructor() {
-    super();
-    this.run();
+    super()
+    this.run()
   }
   async run() {
-    let count = 0;
+    let count = 0
     const seedWoker = setInterval(async () => {
       console.log('>>> Stared worker')
-      count ++;
+      count++
       if (mongo.models.user.find) {
         clearInterval(seedWoker) // End worker
-        await (new RoleSeeder(mongo.models, 'RoleSeeder')).run()
-        await (new UserSeeder(mongo.models, 'UserSeeder')).run()
-        await (new BlogSeeder(mongo.models, 'BlogSeeder')).run()
-        await (new PostSeeder(mongo.models, 'PostSeeder')).run()
+        await new RoleSeeder(mongo.models, 'RoleSeeder').run()
+        await new UserSeeder(mongo.models, 'UserSeeder').run()
+        await new BlogSeeder(mongo.models, 'BlogSeeder').run()
+        await new PostSeeder(mongo.models, 'PostSeeder').run()
+        await new syncDataToElasticsearch(mongo.models, 'SyncData to elasticsearch').run()
         console.log('>>> Finished worker')
       }
       if (count > 10) {
@@ -66,9 +69,9 @@ class UserSeeder extends Seeder {
 class BlogSeeder extends Seeder {
   async run() {
     const blogOfDong = {
-      title: "Blog of Dong Nguyen",
-      content: "This is content blog",
-      metaData: "5de746abda0a9b005f69a937", // Hard
+      title: 'Blog of Dong Nguyen',
+      content: 'This is content blog',
+      metaData: '5de746abda0a9b005f69a937', // Hard
       user: null
     }
     const dongUser = await helper.findOne(this.models.user, { username: 'dong.nguyen' }, { projection: 'id' }, { defaultDocsFlg: true })
@@ -87,8 +90,8 @@ class PostSeeder extends Seeder {
       _posts.push({
         title: `title ${_index}`,
         content: `content ${_index}`,
-        categories: ["5e1439fa94b2a5047f29d5f4"], // HARD
-        tags: ["tien_hiep"],
+        categories: ['5e1439fa94b2a5047f29d5f4'], // HARD
+        tags: ['tien_hiep'],
         user: dongUser._id,
         blog: dongBlog._id
       })
@@ -97,8 +100,19 @@ class PostSeeder extends Seeder {
   }
 }
 
+class syncDataToElasticsearch extends Seeder {
+  async run() {
+    await elastic.deleteIndex()
+    let _posts = await helper.findAll(this.models.post)
+    _posts.forEach(_post => {
+      const _index = _.pick(_post, ['title:', 'content', 'categories', 'user', 'blog'])
+      elastic.index(_index)
+    })
+  }
+}
+
 function initData(list, model, field) {
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     const existingDocs = await model.find()
     const existingDocNames = existingDocs.map(doc => doc[field])
     const newDocs = list.filter(doc => !existingDocNames.includes(doc[field]))
