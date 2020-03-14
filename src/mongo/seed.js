@@ -117,16 +117,8 @@ class syncDataToElasticsearch extends Seeder {
       }
       const _records = await getRecords(model, fields, _options)
       const _pickKey = [...fields.split(' '), 'id']
-
-      _records.forEach(_record => {
-        _record.id = _record._id
-        const _index = _.pick(_record, _pickKey)
-        elastic.index({ [key]: _index }).catch(() => {
-          setTimeout(() => {
-            elastic.index({ [key]: _index })
-          }, 100)
-        })
-      })
+      const _bulkData = _records.flatMap(_record => [{ index: { _index: 'audiovyvy', _type: '_doc' } }, { [key]: _.pick(_record, _pickKey) }])
+      elastic.bulk(_bulkData)
 
       setTimeout(() => {
         if (_records.length === perPage) {

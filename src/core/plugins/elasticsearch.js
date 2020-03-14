@@ -16,7 +16,17 @@ export default class Elasticsearch {
     }
     return client.index({
       index: _INDEX,
-      // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
+      body,
+      ...options
+    })
+  }
+
+  static bulk(body, options = {}) {
+    if (!body) {
+      return null
+    }
+    return client.bulk({
+      index: _INDEX,
       body,
       ...options
     })
@@ -28,7 +38,6 @@ export default class Elasticsearch {
     }
     return client.search({
       index: _INDEX,
-      // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
       body,
       ...options
     })
@@ -36,9 +45,9 @@ export default class Elasticsearch {
 
   static async syncData(data, key, fields = '', options = {}) {
     let _data = await data
+    _data = _.get(_data, 'result')
     const _fields = [...fields.split(' '), 'id']
-    const _index = _.pick(_.get(_data, 'result'), _fields)
-    console.log(`_index`, _data)
+    const _index = _.pick(_data, _fields)
     this.index({ [key]: _index }, options)
   }
 
