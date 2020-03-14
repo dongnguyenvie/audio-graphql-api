@@ -103,11 +103,40 @@ class PostSeeder extends Seeder {
 class syncDataToElasticsearch extends Seeder {
   async run() {
     await elastic.deleteIndex()
-    let _posts = await helper.findAll(this.models.post)
-    _posts.forEach(_post => {
-      const _index = _.pick(_post, ['title:', 'content', 'categories', 'user', 'blog'])
-      elastic.index(_index)
-    })
+    const perPage = 1000
+    const getRecords = (model, fields, options) => {
+      return model.find({}, fields, options)
+    }
+
+    const asyncData = async (model, key, fields, page = 0) => {
+      let _page = Math.max(0, page)
+      const _perPage = perPage
+      const _options = {
+        limit: _perPage,
+        skip: _perPage * _page
+      }
+      const _records = await getRecords(model, fields, _options)
+      const _pickKey = [...fields.split(' '), 'id']
+
+      _records.forEach(_record => {
+        _record.id = _record._id
+        const _index = _.pick(_record, _pickKey)
+        elastic.index({ [key]: _index }).catch(() => {
+          setTimeout(() => {
+            elastic.index({ [key]: _index })
+          }, 100)
+        })
+      })
+
+      setTimeout(() => {
+        if (_records.length === perPage) {
+          _page++
+          asyncData(model, key, fields, _page)
+        }
+      }, 1000)
+    }
+
+    asyncData(this.models.post, 'posts', 'title content categories user blog')
   }
 }
 

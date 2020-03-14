@@ -1,7 +1,8 @@
+import _ from 'lodash'
+import ctrs from '.'
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
-import ctrs from '.'
-import _ from 'lodash'
+import elastic from '../../../core/plugins/elasticsearch'
 
 class post {
   static async getPost(model, args, { projection } = {}, options = {}) {
@@ -19,6 +20,7 @@ class post {
     const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD: JSON.stringify(jsonLD), status, tags }, {}, { defaultDocsFlg: true })
     const post = await modelHeplers.create(model, { ..._args, metaData: metaData.id, user: user.id }, populateSchema)
     // Object.assign(post.result, { jsonLD: metaData.jsonLD, tags: metaData.tags, status: metaData.status })
+    elastic.syncData(post, 'posts', 'title content id')
     return post
   }
   static async updatePost(model, args, { projection } = {}) {
