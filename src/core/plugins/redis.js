@@ -1,10 +1,13 @@
-import redis from 'redis';
+import redis from 'redis'
+import config from '../../../config'
+
+const _HOST = config.HOST
 
 const client = redis.createClient({
-    port: 6379,
-    host: '192.168.93.79',
-    // auth: 'password',
-    db: 2, // if provided select a non-default redis db
-});
+  port: 6379,
+  host: _HOST,
+  // auth: 'password',
+  db: 2 // if provided select a non-default redis db
+})
 
-export default client;
+export default client

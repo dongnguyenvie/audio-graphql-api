@@ -82,7 +82,7 @@ class ModelHeplers {
    * @param {Boolean} options.defaultDocsFlg if default reponse then docsFlg = true
    * @returns {Promise} docs
    */
-  static async findOne(model, conditions = {}, populateSchema, options = {}) {
+  static async findOne(model, conditions = {}, populateSchema = {}, options = {}) {
     const asyncData = model.findOne(conditions, populateSchema.projection, options)
     // Map populate from query
     this.mapPopulates(asyncData, populateSchema)
