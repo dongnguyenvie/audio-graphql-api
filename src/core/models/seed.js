@@ -1,10 +1,12 @@
 import { ApolloError } from 'apollo-server'
-import * as mongo from '../mongo'
-import helper from '../core/helper/model'
+import model from '../models'
+import helper from '../helper/model'
 import bcrypt from 'bcrypt'
-import Seeder from '../core/modules/seeder'
-import elastic from '../core/plugins/elasticsearch'
+import Seeder from '../modules/seeder'
+import elastic from '../plugins/elasticsearch'
 import _ from 'lodash'
+const _models = model;
+
 /**
  * @Main
  */
@@ -18,13 +20,13 @@ export default class DatabaseSeeder extends Seeder {
     const seedWoker = setInterval(async () => {
       console.log('>>> Stared worker')
       count++
-      if (mongo.models.user.find) {
+      if (_models.user.find) {
         clearInterval(seedWoker) // End worker
-        await new RoleSeeder(mongo.models, 'RoleSeeder').run()
-        await new UserSeeder(mongo.models, 'UserSeeder').run()
-        await new BlogSeeder(mongo.models, 'BlogSeeder').run()
-        await new PostSeeder(mongo.models, 'PostSeeder').run()
-        await new syncDataToElasticsearch(mongo.models, 'SyncData to elasticsearch').run()
+        await new RoleSeeder(_models, 'RoleSeeder').run()
+        await new UserSeeder(_models, 'UserSeeder').run()
+        await new BlogSeeder(_models, 'BlogSeeder').run()
+        await new PostSeeder(_models, 'PostSeeder').run()
+        await new syncDataToElasticsearch(_models, 'SyncData to elasticsearch').run()
         console.log('>>> Finished worker')
       }
       if (count > 10) {

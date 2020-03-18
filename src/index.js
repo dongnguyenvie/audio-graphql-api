@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import path from 'path'
-import * as mongo from './mongo'
+import models from './core/models/index'
 import graphQLSchema from './graphQLSchema'
 import middlewareGlobal from './core/middleware'
 // import logger from "./utils/logger";
@@ -25,7 +25,7 @@ const server = new ApolloServer({
       return {
         SECRET: process.env.SECRET || 'dong_nguyen',
         req,
-        models: mongo.models
+        models: models
       }
     }
   }

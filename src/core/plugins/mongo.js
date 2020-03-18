@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 import config from '../../../config'
-import DatabaseSeeder from '../../mongo/seed'
+import DatabaseSeeder from '../../core/models/seed'
 
 mongoose
-  .connect(config.MONGO_URL || 'mongodb://localhost:27017/graphql', {
+  .connect(config.MONGO_URI || 'mongodb://localhost:27017/graphql', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,

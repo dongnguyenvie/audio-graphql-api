@@ -2,7 +2,7 @@ import connectMongo from 'connect-mongo';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors'
-import db from '../database'
+import mongoDB from '../plugins/mongo'
 
 const MongoStore = connectMongo(session)
 export default app => {
@@ -12,6 +12,6 @@ export default app => {
         secret: 'my-secret',
         resave: false,
         saveUninitialized: true,
-        store: new MongoStore({ mongooseConnection: db })
+        store: new MongoStore({ mongooseConnection: mongoDB })
       }));
 }
