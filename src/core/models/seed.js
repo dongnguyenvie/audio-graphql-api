@@ -130,7 +130,7 @@ class syncDataToElasticsearch extends Seeder {
       }, 1000)
     }
 
-    asyncData(this.models.post, 'posts', 'title content categories user blog')
+    asyncData(this.models.post, 'posts', 'title content categories user blog id metaData')
   }
 }
 

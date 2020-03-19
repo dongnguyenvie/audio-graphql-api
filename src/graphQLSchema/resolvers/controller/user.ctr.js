@@ -1,35 +1,38 @@
+import _ from 'lodash'
+import bcrypt from 'bcrypt'
+import models from '../../../core/models'
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
 import { UserInputError, ApolloError, ForbiddenError } from 'apollo-server'
-import bcrypt from 'bcrypt'
-import _ from 'lodash'
+import * as constants from '../../../utils/constants'
 
+const _FIELD = constants.models.USER
 class user {
-  static async getUser(model, args, { projection, populateSchema } = {}, options = {}) {
+  static async getUser(args, { projection, populateSchema } = {}, options = {}) {
     const { _id } = helper.mapToIndexDoc(args)
-    return modelHeplers.findOne(model, { _id }, populateSchema, {})
+    return modelHeplers.findOne(models[_FIELD],{ _id }, populateSchema, {})
   }
 
-  static async getUsers(model, args, { filters, populateSchema } = {}, options = {}) {
+  static async getUsers(args, { filters, populateSchema } = {}, options = {}) {
     Object.assign(options, { filters })
-    return modelHeplers.findPaging(model, args, populateSchema, options)
+    return modelHeplers.findPaging(models[_FIELD],args, populateSchema, options)
   }
 
-  static async createUser(model, args, { populateSchema } = {}, options = {}) {
-    return modelHeplers.create(model, args, populateSchema)
+  static async createUser(args, { populateSchema } = {}, options = {}) {
+    return modelHeplers.create(models[_FIELD],args, populateSchema)
   }
 
-  static async updateUser(model, args) {
+  static async updateUser(args) {
     const { _id, ...update } = helper.mapToIndexDoc(args)
-    return modelHeplers.update(model, { _id }, update)
+    return modelHeplers.update(models[_FIELD],{ _id }, update)
   }
 
-  static async deleteUser(model, args, { projection } = {}, options = {}) {
+  static async deleteUser(args, { projection } = {}, options = {}) {
     const { _id } = helper.mapToIndexDoc(args)
-    return modelHeplers.delete(model, { _id })
+    return modelHeplers.delete(models[_FIELD],{ _id })
   }
 
-  static async changePassword(model, args, { projection, req } = {}, options = {}) {
+  static async changePassword(args, { projection, req } = {}, options = {}) {
     const { _id, oldPass, newPass, confirmPass } = helper.mapToIndexDoc(args)
     if (!_.isEqual(newPass, confirmPass)) {
       new UserInputError(`newPass and confirmPass are not the same`)
@@ -43,7 +46,7 @@ class user {
     if (!isPasswordMatched) {
       new UserInputError(`Password is wrong`)
     }
-    const newUser = await modelHeplers.update(model, { _id }, { password: newPass })
+    const newUser = await modelHeplers.update(models[_FIELD],{ _id }, { password: newPass })
     if (newUser.success) {
       req.session.user = newUser.result
     }

@@ -1,37 +1,40 @@
+import _ from 'lodash'
+import models from '../../../core/models'
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
-import ctrs from '.'
-import _ from 'lodash'
+import ctrs from './'
+import * as constants from '../../../utils/constants'
 
+const _FIELD = constants.models.BLOG
 class blog {
-  static async getBlog(model, args, { projection } = {}, options = {}) {
+  static async getBlog(args, { populateSchema } = {}, options = {}) {
     const { _id } = helper.mapToIndexDoc(args)
-    return modelHeplers.findOne(model, { _id }, projection)
+    return modelHeplers.findOne(models[_FIELD], { _id }, populateSchema)
   }
 
-  static async getBlogs(model, args, { populateSchema, filters } = {}, options = {}) {
+  static async getBlogs(args, { populateSchema, filters } = {}, options = {}) {
     Object.assign(options, { filters })
-    return modelHeplers.findPaging(model, args, populateSchema, options)
+    return modelHeplers.findPaging(models[_FIELD], args, populateSchema, options)
   }
 
-  static async createBlog(model, args, { models, user, populateSchema } = {}) {
-    const blogExits = await modelHeplers.findOne(model, { user: user.id }, {}, { defaultDocsFlg: true })
+  static async createBlog(args, { models, user, populateSchema } = {}) {
+    const blogExits = await modelHeplers.findOne(models[_FIELD], { user: user.id }, {}, { defaultDocsFlg: true })
     if (blogExits) {
-      throw new Error('Blog already exists')
+      throw new Error(`Blog already exists ${blogExits}`)
     }
     const { jsonLD, status, tags, ..._args } = args
     // const metaData = await ctrs.metaData.createMeta(models['metaData'], { jsonLD, status, tags }, {}, { defaultDocsFlg: true })
-    return modelHeplers.create(model, { ..._args, user: user.id }, populateSchema)
+    return modelHeplers.create(models[_FIELD], { ..._args, user: user.id }, populateSchema)
   }
 
-  static async updateBlog(model, args, { populateSchema } = {}) {
+  static async updateBlog(args, { populateSchema } = {}) {
     const { _id, ...update } = helper.mapToIndexDoc(args)
-    return modelHeplers.update(model, { _id }, update)
+    return modelHeplers.update(models[_FIELD], { _id }, update)
   }
 
-  static async deleteBlog(model, args, { populateSchema } = {}) {
+  static async deleteBlog(args, { populateSchema } = {}) {
     const { _id } = helper.mapToIndexDoc(args)
-    return modelHeplers.delete(model, { _id })
+    return modelHeplers.delete(models[_FIELD], { _id })
   }
 }
 

@@ -1,11 +1,13 @@
+import _ from 'lodash'
+import ctrs from './'
+import * as constants from '../../../utils/constants'
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
-import ctrs from '.'
-import _ from 'lodash'
 
+const _FIELD = constants.models.META_DATA
 class metaData {
-  static async createMeta(model, args, { projection } = {}, options = {}) {
-    return modelHeplers.create(model, args, {}, options)
+  static async createMeta(args, { projection } = {}, options = {}) {
+    return modelHeplers.create(models[_FIELD], args, {}, options)
   }
 }
 
