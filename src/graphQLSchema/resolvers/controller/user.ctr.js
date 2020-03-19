@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import bcrypt from 'bcrypt'
 import models from '../../../core/models'
-import modelHeplers from '../../../core/helper/model'
+import errors from '../../../utils/errors'
 import helper from '../../../core/common/helper'
-import { UserInputError, ApolloError, ForbiddenError } from 'apollo-server'
 import * as constants from '../../../utils/constants'
+import modelHeplers from '../../../core/helper/model'
 
 const _FIELD = constants.models.USER
 class user {
@@ -35,16 +35,16 @@ class user {
   static async changePassword(args, { projection, req } = {}, options = {}) {
     const { _id, oldPass, newPass, confirmPass } = helper.mapToIndexDoc(args)
     if (!_.isEqual(newPass, confirmPass)) {
-      new UserInputError(`newPass and confirmPass are not the same`)
+      errors.show(`newPass and confirmPass are not the same`, constants.errors.VALIDATION_ERROR)
     }
     const currentUser = req.session.user
-    console.log(currentUser)
+
     if (currentUser.id !== _id) {
-      new UserInputError(`You are not authorized`)
+      errors.show(`You are not authorized`, constants.errors.AUTHENTICATION_ERROR)
     }
     let isPasswordMatched = bcrypt.compareSync(oldPass, currentUser.password)
     if (!isPasswordMatched) {
-      new UserInputError(`Password is wrong`)
+      errors.show(`Password is wrong`, constants.errors.VALIDATION_ERROR)
     }
     const newUser = await modelHeplers.update(models[_FIELD],{ _id }, { password: newPass })
     if (newUser.success) {

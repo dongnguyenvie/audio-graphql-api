@@ -1,11 +1,11 @@
 import _ from 'lodash'
-import models from '../../../core/models'
-import modelHeplers from '../../../core/helper/model'
-import helper from '../../../core/common/helper'
-import elastic from '../../../core/plugins/elasticsearch'
 import ctrs from './'
-import * as constants from '../../../utils/constants'
+import models from '../../../core/models'
 import errors from '../../../utils/errors'
+import helper from '../../../core/common/helper'
+import modelHeplers from '../../../core/helper/model'
+import elastic from '../../../core/plugins/elasticsearch'
+import * as constants from '../../../utils/constants'
 
 const _FIELD = constants.models.POST
 class post {
@@ -22,7 +22,7 @@ class post {
 
     const blogExits = await modelHeplers.findOne(models[constants.models.BLOG], { _id: blog }, {}, { defaultDocsFlg: true })
     if (!blogExits) {
-      return errors.output(`Blog's not exits`, constants.errors.VALIDATION_ERROR)
+      return errors.show(`Blog's not exits`, constants.errors.VALIDATION_ERROR)
     }
 
     _args.title = `${args.title}${Math.random()}`

@@ -4,12 +4,11 @@ import { ApolloError, ForbiddenError, SchemaError, SyntaxError, ValidationError,
 const classes = { ApolloError, ForbiddenError, SchemaError, SyntaxError, ValidationError, UserInputError, AuthenticationError };
 
 class ErrorEx {
-    static output(message, type = '') {
+    static show(message, type = '') {
         if (_.isEmpty(type)) {
-            console.log(99999)
-            return new Error(message)
+            throw new Error(message)
         }
-        return new classes[type](message)
+        throw new classes[type](message)
     }
 }
 

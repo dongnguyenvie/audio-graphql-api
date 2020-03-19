@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken'
 import models from '../../../core/models'
 import modelHeplers from '../../../core/helper/model'
 import helper from '../../../core/common/helper'
-import { UserInputError, ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server'
 import * as constants from '../../../utils/constants'
+import errors from '../../../utils/errors'
 
 class auth {
   static async login(args, { populateSchema, SECRET, req, isAdmin = false } = {}, options = {}) {
@@ -14,7 +14,7 @@ class auth {
     const { username, password, rememberMe } = args
     const user = await modelHeplers.findOne(models[constants.models.USER], { username }, populateSchema, { ...options, defaultDocsFlg: true })
     if (!user || !helper.comparePassword(password, user.password)) {
-      throw new ApolloError('user is not correct')
+      errors.show('user is not correct', constants.errors.VALIDATION_ERROR)
     }
     const _user = helper.mapUserSession(user)
     if (rememberMe) {
