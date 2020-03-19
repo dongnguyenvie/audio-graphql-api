@@ -25,6 +25,7 @@ export default class DatabaseSeeder extends Seeder {
         await new RoleSeeder(_models, 'RoleSeeder').run()
         await new UserSeeder(_models, 'UserSeeder').run()
         await new BlogSeeder(_models, 'BlogSeeder').run()
+        await new MetaData(_models, 'metaData').run()
         await new PostSeeder(_models, 'PostSeeder').run()
         await new syncDataToElasticsearch(_models, 'SyncData to elasticsearch').run()
         console.log('>>> Finished worker')
@@ -82,22 +83,44 @@ class BlogSeeder extends Seeder {
   }
 }
 
+class MetaData extends Seeder {
+  async run() {
+    const _metaDatas = []
+    const _sheet = () => ({
+      slug: 'slug-test' + Math.ceil(Math.random() * 100),
+      view: Math.ceil(Math.random() * 100),
+      status: true,
+      like: false,
+      order: 0,
+      status: true,
+      like: Math.ceil(Math.random() * 100),
+      tags: ['tien_hiep'],
+      jsonLD: JSON.stringify({ title: 'title init', description: "description init" })
+    })
+    while (_metaDatas.length < 5) {
+      _metaDatas.push(_sheet())
+    }
+    return initData(_metaDatas, this.models.metaData)
+  }
+}
+
 class PostSeeder extends Seeder {
   async run() {
     const _posts = []
-    const dongUser = await helper.findOne(this.models.user, { username: 'dong.nguyen' }, { projection: 'id' }, { defaultDocsFlg: true })
-    const dongBlog = await helper.findOne(this.models.blog, { user: dongUser._id }, { projection: 'id' }, { defaultDocsFlg: true })
-    while (_posts.length < 5) {
-      const _index = _posts.length
+    const _user = await helper.findOne(this.models.user, { username: 'dong.nguyen' }, { projection: 'id' }, { defaultDocsFlg: true })
+    const _blog = await helper.findOne(this.models.blog, { user: _user._id }, { projection: 'id' }, { defaultDocsFlg: true })
+    const _metaDatas = await helper.findAll(this.models.metaData)
+    _metaDatas.forEach((_metaData, _index) => {
       _posts.push({
         title: `title ${_index}`,
         content: `content ${_index}`,
         categories: ['5e1439fa94b2a5047f29d5f4'], // HARD
-        tags: ['tien_hiep'],
-        user: dongUser._id,
-        blog: dongBlog._id
+        // tags: ['tien_hiep'],
+        user: _user._id,
+        blog: _blog._id,
+        metaData: _metaData._id
       })
-    }
+    })
     return initData(_posts, this.models.post)
   }
 }

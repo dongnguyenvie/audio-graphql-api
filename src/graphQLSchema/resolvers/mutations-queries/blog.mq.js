@@ -3,7 +3,7 @@ import * as types from '../../../core/types'
 import helper from '../../../core/common/helper'
 import * as constants from '../../../utils/constants'
 
-const __FIELD = constants.models.BLOG
+const _FIELD = constants.models.BLOG
 /**
  * Post resolvers
  * async (root, args, context, info)

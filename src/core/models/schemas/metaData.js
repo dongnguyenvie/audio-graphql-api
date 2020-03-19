@@ -15,14 +15,15 @@ const metaDataSchema = new mongoose.Schema(
       default: 0
     },
     order: {
-      type: Number
+      type: Number,
+      default: 0
     },
     status: {
       type: Boolean,
       default: true
     },
     like: {
-      type: Boolean,
+      type: Number,
       default: 0
     },
     tags: {

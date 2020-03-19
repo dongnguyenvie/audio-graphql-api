@@ -22,12 +22,12 @@ class post {
 
     const blogExits = await modelHeplers.findOne(models[constants.models.BLOG], { _id: blog }, {}, { defaultDocsFlg: true })
     if (!blogExits) {
-      return errors.show(`Blog's not exits`, constants.errors.VALIDATION_ERROR)
+      errors.show(`Blog's not exits`, constants.errors.VALIDATION_ERROR)
     }
-
     _args.title = `${args.title}${Math.random()}`
+    const _slug = helper.stringToSlug(_args.title)
 
-    const metaData = await ctrs[constants.ctrs.META_DATA].createMeta({ jsonLD: JSON.stringify(jsonLD), status, tags }, {}, { defaultDocsFlg: true })
+    const metaData = await ctrs[constants.ctrs.META_DATA].createMeta({ jsonLD: JSON.stringify(jsonLD), status, tags, slug: _slug }, {}, { defaultDocsFlg: true })
 
     const post = await modelHeplers.create(models[_FIELD], { ..._args, metaData: metaData.id, user: user.id }, populateSchema)
     // Object.assign(post.result, { jsonLD: metaData.jsonLD, tags: metaData.tags, status: metaData.status })
