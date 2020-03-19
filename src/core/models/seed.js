@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt'
 import Seeder from '../modules/seeder'
 import elastic from '../plugins/elasticsearch'
 import _ from 'lodash'
-const _models = model;
 
 /**
  * @Main
@@ -16,6 +15,7 @@ export default class DatabaseSeeder extends Seeder {
     this.run()
   }
   async run() {
+    const _models = model;
     let count = 0
     const seedWoker = setInterval(async () => {
       console.log('>>> Stared worker')
