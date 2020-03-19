@@ -27,7 +27,8 @@ class post {
 
     _args.title = `${args.title}${Math.random()}`
 
-    const metaData = await ctrs.metaData.createMeta(models[constants.models.META_DATA], { jsonLD: JSON.stringify(jsonLD), status, tags }, {}, { defaultDocsFlg: true })
+    const metaData = await ctrs[constants.ctrs.META_DATA].createMeta({ jsonLD: JSON.stringify(jsonLD), status, tags }, {}, { defaultDocsFlg: true })
+
     const post = await modelHeplers.create(models[_FIELD], { ..._args, metaData: metaData.id, user: user.id }, populateSchema)
     // Object.assign(post.result, { jsonLD: metaData.jsonLD, tags: metaData.tags, status: metaData.status })
     elastic.syncData(post, 'posts', 'title content id metaData')

@@ -7,7 +7,7 @@ export default {
   Query: {
     login: (_, args, { models, me, SECRET, req }, info) => {
       const populateSchema = helper.getPopulateSchema(info, 'user')
-      const conditions = args[_FIELD]
+      const conditions = args['user']
       return ctrs[_FIELD].login(conditions, { SECRET, req, populateSchema })
     }
   },
