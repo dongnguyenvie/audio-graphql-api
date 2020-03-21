@@ -1,4 +1,4 @@
-# apollo-graphql-seed
+# apollo-graphql-seed (process)
 
 ```
 node install dependencies global: nodemon
@@ -14,4 +14,9 @@ custom scalar: https://www.apollographql.com/docs/graphql-tools/scalars/
 ### Live demo
 ```
 http://45.77.170.14:3000/graphql
+```
+
+### Admin dashboard (process)
+```
+https://github.com/dongnguyenvie/audiovyvy-admin-dashboard
 ```
