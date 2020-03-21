@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  audiovyvy_backend:
+    container_name: c_audiovyvy_nodejs
+    build:
+      context: .
+      dockerfile: ./docker_compose/Dockerfile.prod
+    command: /usr/prod.sh
+    links:
+      - audiovyvy_elasticsearch
+      - audiovyvy_mongo
+    depends_on:
+      - audiovyvy_elasticsearch
+      - audiovyvy_mongo
+    # volumes:
+    #   - .:/usr/app/
+    #   - /usr/app/node_modules
+    ports:
+      - "3333:3000"
+      # - "9229:9229"
+  audiovyvy_mongo:
+    container_name: c_audiovyvy_mongo
+    image: mongo
+  audiovyvy_elasticsearch:
+    container_name: c_audiovyvy_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    # ports:
+    # - "27017:27017"
+    # volumes:
+    # - data-volume:/data/db

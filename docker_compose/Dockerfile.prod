@@ -1,0 +1,7 @@
+FROM node:latest
+ADD ./docker_compose/prod.sh /usr/prod.sh
+COPY ./ /usr/app/
+# RUN cd /usr/app/ && ls
+RUN ls
+RUN sed -i 's/\r//' /usr/prod.sh
+RUN chmod +x /usr/prod.sh
