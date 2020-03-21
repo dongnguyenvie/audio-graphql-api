@@ -13,7 +13,7 @@ custom scalar: https://www.apollographql.com/docs/graphql-tools/scalars/
 
 ### Live demo
 ```
-http://45.77.170.14:3000/graphql
+http://audiovyvy.com:3000/graphql
 ```
 
 ### Admin dashboard (process)
