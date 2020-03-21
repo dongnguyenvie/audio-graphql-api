@@ -26,7 +26,7 @@ services:
     container_name: c_audiovyvy_elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
     environment:
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
     # ports:
     # - "27017:27017"
     # volumes:
