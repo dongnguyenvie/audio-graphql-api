@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import Seeder from '../modules/seeder'
 import elastic from '../plugins/elasticsearch'
 import _ from 'lodash'
+import configs from '../../../config'
 
 /**
  * @Main
@@ -15,7 +16,7 @@ export default class DatabaseSeeder extends Seeder {
     this.run()
   }
   async run() {
-    const _models = model;
+    const _models = model
     let count = 0
     const seedWoker = setInterval(async () => {
       console.log('>>> Stared worker')
@@ -95,7 +96,7 @@ class MetaData extends Seeder {
       status: true,
       like: Math.ceil(Math.random() * 100),
       tags: ['tien_hiep'],
-      jsonLD: JSON.stringify({ title: 'title init', description: "description init" })
+      jsonLD: JSON.stringify({ title: 'title init', description: 'description init' })
     })
     while (_metaDatas.length < 5) {
       _metaDatas.push(_sheet())
@@ -127,6 +128,9 @@ class PostSeeder extends Seeder {
 
 class syncDataToElasticsearch extends Seeder {
   async run() {
+    if (configs.ELASTICSEARCH_DISABLE) {
+      return
+    }
     await elastic.deleteIndex()
     const perPage = 1000
     const getRecords = (model, fields, options) => {

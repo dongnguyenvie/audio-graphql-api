@@ -11,6 +11,10 @@ type LoginReponse {
   role: [Role]
 }
 
-extend type Query {
+# extend type Query {
+#   login(user: InputLoginQuery!): LoginReponse
+# }
+
+extend type Mutation {
   login(user: InputLoginQuery!): LoginReponse
 }

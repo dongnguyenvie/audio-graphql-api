@@ -5,6 +5,7 @@ import path from 'path'
 import models from './core/models/index'
 import graphQLSchema from './graphQLSchema'
 import middlewareGlobal from './core/middleware'
+import configs from '../config'
 // import logger from "./utils/logger";
 // import uuidv4 from 'uuid/v4';
 
@@ -33,7 +34,7 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app, path: '/graphql' })
 
-app.listen({ port: 3000 }, () => {
+app.listen({ port: configs.PORT || 3000 }, () => {
   console.log('Apollo Server on http://localhost:3000/graphql')
   // console.clear();
 })
