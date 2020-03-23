@@ -17,7 +17,7 @@ services:
     #   - .:/usr/app/
     #   - /usr/app/node_modules
     ports:
-      - "3000:3000"
+      - "7001:3000"
       # - "9229:9229"
   audiovyvy_mongo:
     container_name: c_audiovyvy_mongo
