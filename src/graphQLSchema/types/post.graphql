@@ -28,6 +28,7 @@ input InputRemovePost {
 }
 
 type Post {
+  id: ID
   title: String
   content: String
   blog: Blog
@@ -53,6 +54,7 @@ type PostPaginate {
   meta: JSON
 }
 type typeCreatePost {
+  id: ID
   title: String
   content: String
   blog: Blog

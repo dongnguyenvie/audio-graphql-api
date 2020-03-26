@@ -36,7 +36,7 @@ const postSchema = new mongoose.Schema(
     ]
   },
   {
-    timestamps: false
+    timestamps: true
   }
 )
 postSchema.index({ title: 1 }, { sparse: true })
