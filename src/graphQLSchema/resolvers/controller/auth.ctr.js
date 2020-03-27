@@ -16,6 +16,10 @@ class auth {
     if (!user || !helper.comparePassword(password, user.password)) {
       errors.show('user is not correct', constants.errors.VALIDATION_ERROR)
     }
+    const blog = await models[constants.models.BLOG].findOne({user: user.id}, 'id')
+    if (blog) {
+      user.blog = blog.id
+    }
     const _user = helper.mapUserSession(user)
     if (rememberMe) {
       req.session.user = _user

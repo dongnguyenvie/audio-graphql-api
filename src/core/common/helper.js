@@ -37,8 +37,8 @@ class Helper {
    * @param {*} user
    */
   static mapUserSession(user) {
-    const { roles, id, username, fullName, avatar, email, phone } = user
-    const _user = { id, username, fullName, avatar, email, phone }
+    const { roles, id, username, fullName, avatar, email, phone, blog } = user
+    const _user = { id, username, fullName, avatar, email, phone, blog }
     _user.roles = roles.map(role => role.permission)
     return _user
   }

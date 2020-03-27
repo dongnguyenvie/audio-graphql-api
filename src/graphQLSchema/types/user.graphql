@@ -50,6 +50,7 @@ type UserPaginate {
 
 type User {
   id: ID
+  blog: ID
   username: String!
   fullName: String
   avatar: String
